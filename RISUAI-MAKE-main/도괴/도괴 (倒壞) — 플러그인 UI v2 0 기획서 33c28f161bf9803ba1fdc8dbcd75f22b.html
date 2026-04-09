@@ -1,0 +1,744 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>도괴 (倒壞) — 플러그인 UI v2.0 기획서</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="33c28f16-1bf9-803b-a1fd-c8dbcd75f22b" class="page sans"><header><h1 class="page-title" dir="auto"><strong>도괴 (倒壞) — 플러그인 UI v2.0 기획서</strong></h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><blockquote id="33c28f16-1bf9-80d9-88ba-c4d5d55b156e" class=""><strong>버전</strong>: v2.0 기획서<div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80ac-977f-edeb1b0411d8" class=""><strong>작성일</strong>: 2026-03-1</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8004-b255-dded00fb188d" class=""><strong>RisuAI 버전</strong>: v2026.1.90</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8064-b5e0-cb25b1853dcb" class=""><strong>아키텍처</strong>: B플랜 (플러그인 중심)</p></div></blockquote></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80f4-a3e9-d5c1f968e8aa"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-803b-9cab-d18dc1b56b4b" class=""><strong>1. 개요</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80e8-9169-eb7c1413f9e7" class=""><strong>1.1 목표</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8080-a2cf-c175c31537ae" class="">기존 v1.0 스마트폰 UI를 확장하여 <strong>스마트폰 팝업 + 방 탐색 핫스팟</strong>을 통합 구현합니다.</p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8003-80c3-ea0c90fd815d" class=""><strong>1.2 핵심 원칙</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-809b-ab2f-f51ea4c726b0" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80c3-b7d8-ebd21657d435"><th id="ejEr" class="simple-table-header-color simple-table-header"><strong>원칙</strong></th><th id="VuF|" class="simple-table-header-color simple-table-header"><strong>설명</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-801c-b940-e4be046d1dfc"><td id="ejEr" class=""><strong>상태 유지</strong></td><td id="VuF|" class="">팝업 열림/닫힘, 탭 선택 상태를 플러그인이 관리</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80ea-855e-c89239341199"><td id="ejEr" class=""><strong>실시간 동기화</strong></td><td id="VuF|" class="">Lua chatVar를 JS가 직접 읽어 UI에 반영</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80b8-bafc-f4264458d9ed"><td id="ejEr" class=""><strong>토큰 최소화</strong></td><td id="VuF|" class="">AI는<code>{PHONE}</code>,<code>{HOTSPOT}</code> 태그만 출력, 렌더링은 플러그인</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-807d-9de4-f56b573790b6"><td id="ejEr" class=""><strong>기존 자산 활용</strong></td><td id="VuF|" class="">Lua v1, 로어북 v3, 정규식 24종 그대로 사용</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80b9-a3e7-fa02983cc659"><td id="ejEr" class=""><strong>Copy table</strong></td><td id="VuF|" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-8044-a729-ce924378446e"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-80bc-89eb-c7569fba3fd3" class=""><strong>2. 아키텍처</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80d2-92b4-fc42051f63b4" class=""><strong>2.1 계층 구조</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-801c-a436-d06e16f977ea" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8028-9f31-e9dc3b9cbd78" class=""><code>┌─────────────────────────────────────────────────────────────┐<br/>│                      AI 응답 (서사 텍스트)                    │<br/>│  {PHONE} 태그 또는 {HOTSPOT|floor|step} 태그 포함            │<br/>└─────────────────────────────────────────────────────────────┘<br/>                              ↓<br/>┌─────────────────────────────────────────────────────────────┐<br/>│                   정규식                        │<br/>│  - {PHONE} → &lt;div class=&quot;phone-trigger&quot;&gt;...&lt;/div&gt;           │<br/>│  - {HOTSPOT|...} → &lt;div class=&quot;hotspot-container&quot;&gt;...&lt;/div&gt;  │<br/>│  - META 블록 숨김                                            │<br/>└─────────────────────────────────────────────────────────────┘<br/>                              ↓<br/>┌─────────────────────────────────────────────────────────────┐<br/>│                    플러그인                      │<br/>│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │<br/>│  │ 스마트폰 UI │  │  핫스팟 UI  │  │  상태 동기  │          │<br/>│  │ - 팝업 관리 │  │ - 버튼 생성 │  │ - chatVar  │          │<br/>│  │ - 탭 전환   │  │ - 클릭 처리 │  │   읽기      │          │<br/>│  │ - 데이터    │  │ - 조사 결과 │  │ - pending  │          │<br/>│ │   렌더링    │  │             │  │   처리      │          │<br/>│  └─────────────┘  └─────────────┘  └─────────────┘          │<br/>└─────────────────────────────────────────────────────────────┘<br/>                              ↓<br/>┌─────────────────────────────────────────────────────────────┐<br/>│                      Lua 트리거                              │<br/>│  - onStart: 초기화                                           │<br/>│  - editOutput: 태그 파싱 + 변수 저장                         │<br/>│  - onButtonClick: 버튼 클릭 → 조사 처리                      │<br/>└─────────────────────────────────────────────────────────────┘</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80ae-bc07-d570e4c983ad" class=""><strong>2.2 데이터 흐름</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8068-9b17-f8a9a9cbce46" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80a2-9601-fd61b4b0fe50" class=""><code>[AI 응답]<br/>    │<br/>    ├─ 서사 텍스트<br/>    │<br/>    └─ {ACTION|investigate|514} 태그<br/>           ↓<br/>    [정규식 editOutput]<br/>           │<br/>           └─ setChatVar(&quot;cv_pending_action&quot;, &quot;investigate|514&quot;)<br/>           ↓<br/>    [플러그인 폴링]<br/>           │<br/>           └─ pending 감지 → 버튼 렌더링<br/>           ↓<br/>    [유저 클릭]<br/>           │<br/>           └─ onButtonClick(&quot;investigate&quot;, &quot;514&quot;)<br/>           ↓<br/>    [Lua 처리]<br/>           │<br/>           └─ 단서 발견 로직 실행</code></p></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-809b-b3e2-e45f22400498"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-803c-a028-e4338c40f78b" class=""><strong>3. 스마트폰 UI 설계</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-805c-8813-d1372e3353fe" class=""><strong>3.1 구조</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8096-956e-de2bc3466cf5" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8083-8258-e57f91ae4a0e" class=""><code>┌─────────────────────────────────┐<br/>│  📱 [닫기]         23:45        │  ← 헤더<br/>├─────────────────────────────────┤<br/>│                                 │<br/>│  [탭 아이콘 5개]                │  ← 탭 네비게이션<br/>│  📊  🎒  📞  💬  🖼️            │<br/>│                                 │<br/>├─────────────────────────────────┤<br/>│                                 │<br/>│  [현재 탭 내용]                 │  ← 탭 패널<br/>│                                 │<br/>│  - status: 배터리, 신호, 시간   │<br/>│    층, 위치, 동행, 호감도       │<br/>│                                 │<br/>│  - inv: 소지품 + 단서 목록      │<br/>│                                 │<br/>│  - contacts: 5인 연락처         │<br/>│                                 │<br/>│  - msg: 단톡방 + 개인톡        │<br/>│                                 │<br/>│  - gallery: CG + 업적          │<br/>│                                 │<br/>└─────────────────────────────────┘</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8067-a3dd-e426e044c3bf" class=""><strong>3.2 탭 상세</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8069-b8de-f2122570ba05" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8019-9aef-e26b8818fd36"><th id="X&lt;SR" class="simple-table-header-color simple-table-header"><strong>탭</strong></th><th id=":ea@" class="simple-table-header-color simple-table-header"><strong>ID</strong></th><th id="rFF_" class="simple-table-header-color simple-table-header"><strong>내용</strong></th><th id="t\II" class="simple-table-header-color simple-table-header"><strong>데이터 소스</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-808e-b9d4-d2ae09a4be44"><td id="X&lt;SR" class="">상태</td><td id=":ea@" class=""><code>status</code></td><td id="rFF_" class="">배터리, 신호, 시간, 층, 위치, 동행, 호감도(5인)</td><td id="t\II" class="">chatVar 실시간</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8097-8f83-d853bb414ef7"><td id="X&lt;SR" class="">소지품</td><td id=":ea@" class=""><code>inv</code></td><td id="rFF_" class="">도구 목록 + 단서 목록 (획득 시 체크)</td><td id="t\II" class=""><code>cv_inv_*</code></td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8004-9c7f-d90781f7f4cf"><td id="X&lt;SR" class="">연락처</td><td id=":ea@" class=""><code>contacts</code></td><td id="rFF_" class="">5인 프로필 + 전화 아이콘</td><td id="t\II" class="">고정 +<code>cv_met_*</code></td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80c1-9a53-c8f968692426"><td id="X&lt;SR" class="">메시지</td><td id=":ea@" class=""><code>msg</code></td><td id="rFF_" class="">단톡방 + 개인톡 목록</td><td id="t\II" class=""><code>cv_contact_*</code></td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80f8-b535-c6733f7bc184"><td id="X&lt;SR" class="">갤러리</td><td id=":ea@" class=""><code>gallery</code></td><td id="rFF_" class="">CG 슬롯 (텍스트) + 업적</td><td id="t\II" class=""><code>cv_ach_*</code></td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80a5-931a-e7961fa265b1"><td id="X&lt;SR" class=""><strong>Copy table</strong></td><td id=":ea@" class=""></td><td id="rFF_" class=""></td><td id="t\II" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8040-9cae-d5a1cb1e34ea" class=""><strong>3.3 호감도 표시</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80c7-9e36-d165f7e64e54" class="">HTML</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8017-9846-e36eb02a0e90" class=""><code>&lt;!-- 플러그인에서 생성 --&gt;<br/>&lt;div class=&quot;aff-stars&quot;&gt;<br/>  &lt;span class=&quot;npc-name&quot;&gt;서준혁&lt;/span&gt;<br/>  &lt;span class=&quot;stars&quot;&gt;<br/>    &lt;!-- cv_aff_seo 값을 읽어 별표 렌더링 --&gt;<br/>    ★★★☆☆ (3/5)<br/>  &lt;/span&gt;<br/>&lt;/div&gt;</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8036-96bb-c4efe6d79dfa" class=""><strong>3.4 팝업 동작</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-80e1-842e-f3579d4442fa" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-801c-a4d5-cd22d0d92127"><th id="wF?e" class="simple-table-header-color simple-table-header"><strong>동작</strong></th><th id="CmKS" class="simple-table-header-color simple-table-header"><strong>구현</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80f7-90ae-d60466d7d371"><td id="wF?e" class="">열기</td><td id="CmKS" class=""><code>{PHONE}</code> 태그 감지 → 플러그인이 팝업 표시</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8067-9b74-eccaf9d87d3f"><td id="wF?e" class="">닫기</td><td id="CmKS" class="">닫기 버튼 클릭 → 팝업 숨김</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8040-8285-d66dd59e4aa3"><td id="wF?e" class="">탭 전환</td><td id="CmKS" class="">탭 아이콘 클릭 → 해당 패널 표시 (상태는 메모리 유지)</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80a8-ad11-e7579bbff97f"><td id="wF?e" class="">상태 동기</td><td id="CmKS" class="">30초마다 chatVar 재조회 → UI 갱신</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-806a-93c5-c2890a17d1a0"><td id="wF?e" class=""><strong>Copy table</strong></td><td id="CmKS" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-802d-abb3-f7fe2d277c1b"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-80bc-a3a6-c16765ff93da" class=""><strong>4. 방 탐색 핫스팟 설계</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80af-806a-c272a79fe3fc" class=""><strong>4.1 구조</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80eb-99ed-ea9b251d1896" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8049-b7bd-c045af731471" class=""><code>┌─────────────────────────────────────────────────────────────┐<br/>│  현재 층: 5F 게스트 라운지                                  │<br/>├─────────────────────────────────────────────────────────────┤<br/>│                                                             │<br/>│  ┌─────────┐  ┌─────────┐  ┌─────────┐                     │<br/>│  │ 514호   │  │ 비상함  │  │ 라운지  │                     │<br/>│  │ [조사]  │  │ [조사]  │  │ [대화]  │                     │<br/>│  └─────────┘  └─────────┘  └─────────┘                     │<br/>│                                                             │<br/>│  ┌─────────┐  ┌─────────┐  ┌─────────┐                     │<br/>│  │ 복도    │  │ 계단    │  │ 엘리베  │                     │<br/>│  │ [이동]  │  │ [이동]  │  │ [이동]  │                     │<br/>│  └─────────┘  └─────────┘  └─────────┘                     │<br/>│                                                             │<br/>└─────────────────────────────────────────────────────────────┘</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-808c-92c7-c80599f4af6c" class=""><strong>4.2 버튼 타입</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8073-b312-ebe8b2d34664" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-803c-b80e-ceeec22870b6"><th id="F~ls" class="simple-table-header-color simple-table-header"><strong>타입</strong></th><th id="uPiT" class="simple-table-header-color simple-table-header"><strong>동작</strong></th><th id="I@jZ" class="simple-table-header-color simple-table-header"><strong>예시</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-801b-9bb6-e7be012b97c0"><td id="F~ls" class=""><code>investigate</code></td><td id="uPiT" class="">단서/아이템 조사</td><td id="I@jZ" class="">514호 문틀 조사</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-804b-a06c-ea8ecb2b1aa0"><td id="F~ls" class=""><code>move</code></td><td id="uPiT" class="">층 이동</td><td id="I@jZ" class="">4F로 이동</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-805c-b0e2-e4e2ef08e042"><td id="F~ls" class=""><code>talk</code></td><td id="uPiT" class="">NPC 대화</td><td id="I@jZ" class="">서준혁과 대화</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-804d-b7c6-fb7a733cc823"><td id="F~ls" class=""><code>action</code></td><td id="uPiT" class="">특수 행동</td><td id="I@jZ" class="">도구 사용, 문 열기</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80d8-a967-df5fb7c342c9"><td id="F~ls" class=""><strong>Copy table</strong></td><td id="uPiT" class=""></td><td id="I@jZ" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80cf-b698-d68c7a87381d" class=""><strong>4.3 버튼 상태</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8071-b328-e20894f8ad91" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8071-a7a5-f24479430c60"><th id=":RBE" class="simple-table-header-color simple-table-header"><strong>상태</strong></th><th id="T]]Q" class="simple-table-header-color simple-table-header"><strong>CSS 클래스</strong></th><th id="bn:K" class="simple-table-header-color simple-table-header"><strong>설명</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-809c-a20b-dfafee739bc5"><td id=":RBE" class="">활성</td><td id="T]]Q" class=""><code>.hotspot-btn--active</code></td><td id="bn:K" class="">조사 가능</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80c8-a787-d449077aed17"><td id=":RBE" class="">비활성</td><td id="T]]Q" class=""><code>.hotspot-btn--disabled</code></td><td id="bn:K" class="">도구 필요 / 조건 미충족</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-801b-b470-ff0764061b4a"><td id=":RBE" class="">완료</td><td id="T]]Q" class=""><code>.hotspot-btn--done</code></td><td id="bn:K" class="">이미 조사 완료</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80b5-bce4-f7147bab5761"><td id=":RBE" class="">위험</td><td id="T]]Q" class=""><code>.hotspot-btn--danger</code></td><td id="bn:K" class="">위험 구역 경고</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-800d-bf0b-ddb412d6edac"><td id=":RBE" class=""><strong>Copy table</strong></td><td id="T]]Q" class=""></td><td id="bn:K" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-808d-8e1e-f7293eda79c8" class=""><strong>4.4 데이터 구조</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80c8-a03f-d1a20a6bc744" class="">JavaScript</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-807b-996d-f8e4c669bf3e" class=""><code>// Lua: FLOOR_OBJECTS 데이터<br/>const FLOOR_OBJECTS = {<br/>  &quot;5&quot;: { // 5F<br/>    &quot;step_3+&quot;: [ // step 3 이후부터 표시<br/>      {<br/>        id: &quot;514&quot;,<br/>        type: &quot;investigate&quot;,<br/>        label: &quot;514호 문틀&quot;,<br/>        requires: null, // 도구 필요 없음<br/>        gives: &quot;doorframe&quot;, // 획득 단서<br/>        danger: false<br/>      },<br/>      {<br/>        id: &quot;emergency_box&quot;,<br/>        type: &quot;investigate&quot;,<br/>        label: &quot;비상함&quot;,<br/>        requires: null,<br/>        gives: [&quot;flashlight&quot;, &quot;medkit&quot;],<br/>        danger: false<br/>      },<br/>      {<br/>        id: &quot;corridor_down&quot;,<br/>        type: &quot;move&quot;,<br/>        label: &quot;4층으로&quot;,<br/>        target_floor: 4,<br/>        requires: null,<br/>        danger: false<br/>      }<br/>    ]<br/>  },<br/>  &quot;6&quot;: { // 6F<br/>    &quot;step_3+&quot;: [<br/>      {<br/>        id: &quot;pool&quot;,<br/>        type: &quot;investigate&quot;,<br/>        label: &quot;수영장&quot;,<br/>        requires: &quot;flashlight&quot;, // 손전등 필요<br/>        danger: true, // 감전 위험<br/>        gives: &quot;doc_pool&quot;<br/>      }<br/>    ]<br/>  }<br/>  // ...<br/>};</code></p></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-808d-818d-deaaebb23d76"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-808f-b6bb-e7914e2d303e" class=""><strong>5. Lua 연동</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8085-ae56-ca10f76ef32e" class=""><strong>5.1 기존 변수 활용</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8074-906d-f89b7e5a5d05" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80c1-9125-d99f4283b58d"><th id="&lt;m@^" class="simple-table-header-color simple-table-header"><strong>변수</strong></th><th id="vFrn" class="simple-table-header-color simple-table-header"><strong>용도</strong></th><th id="KsHs" class="simple-table-header-color simple-table-header"><strong>UI 반영</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80a9-b7ae-d493bd34955c"><td id="&lt;m@^" class=""><code>cv_floor</code></td><td id="vFrn" class="">현재 층</td><td id="KsHs" class="">핫스팟 표시</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-809a-a69b-e12e2fa82414"><td id="&lt;m@^" class=""><code>cv_step</code></td><td id="vFrn" class="">스토리 진행</td><td id="KsHs" class="">버튼 활성화 조건</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8014-bd56-e70de8c4a338"><td id="&lt;m@^" class=""><code>cv_battery</code></td><td id="vFrn" class="">배터리 %</td><td id="KsHs" class="">스마트폰 상태 탭</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8014-9336-c9950980752e"><td id="&lt;m@^" class=""><code>cv_signal</code></td><td id="vFrn" class="">신호 강도</td><td id="KsHs" class="">스마트폰 상태 탭</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8029-aa04-d3d42183e4c8"><td id="&lt;m@^" class=""><code>cv_companion</code></td><td id="vFrn" class="">동행 NPC</td><td id="KsHs" class="">스마트폰 상태 탭</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8028-b010-d281a4850b13"><td id="&lt;m@^" class=""><code>cv_aff_*</code></td><td id="vFrn" class="">호감도</td><td id="KsHs" class="">스마트폰 상태 탭</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-805f-8991-fe406359c0c8"><td id="&lt;m@^" class=""><code>cv_inv_*</code></td><td id="vFrn" class="">인벤토리</td><td id="KsHs" class="">스마트폰 소지품 탭</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80d9-9cb2-f32cf939ad0f"><td id="&lt;m@^" class=""><code>cv_pending_*</code></td><td id="vFrn" class="">대기 상태</td><td id="KsHs" class="">플러그인 폴링</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80d8-9a5d-d59b644d6796"><td id="&lt;m@^" class=""><strong>Copy table</strong></td><td id="vFrn" class=""></td><td id="KsHs" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8021-b53d-de264f995765" class=""><strong>5.2 새로운 변수 (필요시)</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80bc-9772-fbf751340ac1" class="">Lua</p></div><div style="display:contents" dir="auto"><ul id="33c28f16-1bf9-80c5-86a9-c3a455862b3d" class="bulleted-list"><li style="list-style-type:disc"><code>- 플러그인 상태<br/>cv_phone_open = &quot;0&quot; - 스마트폰 열림 상태 (0/1)<br/>cv_phone_tab = &quot;status&quot; - 현재 탭<br/>cv_hotspot_done = &quot;&quot; - 조사 완료 장소 (CSV: &quot;514,pool,machine&quot;)</code></li></ul></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8073-a359-e2712f01e683" class=""><strong>5.3 Lua onButtonClick 확장</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8084-9368-d591375247d2" class="">Lua</p></div><div style="display:contents" dir="auto"><ul id="33c28f16-1bf9-80c0-8440-feb7000c5599" class="bulleted-list"><li style="list-style-type:disc"><code>- 버튼 클릭 처리function onButtonClick(buttonId, param) if buttonId == &quot;investigate&quot; then- 조사 처리 handleInvestigate(param) elseif buttonId == &quot;move&quot; then- 층 이동 handleMove(param) elseif buttonId == &quot;phone_toggle&quot; then- 스마트폰 열기/닫기local current = getChatVar(&quot;cv_phone_open&quot;) or &quot;0&quot; setChatVar(&quot;cv_phone_open&quot;, current == &quot;0&quot; and &quot;1&quot; or &quot;0&quot;) elseif buttonId == &quot;phone_tab&quot; then- 탭 전환 setChatVar(&quot;cv_phone_tab&quot;, param) endendfunction handleInvestigate(locationId) - 단서 획득 처리local clues = { [&quot;514&quot;] = &quot;doorframe&quot;, [&quot;pool&quot;] = &quot;doc_pool&quot;, [&quot;emergency_box&quot;] = &quot;flashlight&quot; } if clues[locationId] then setChatVar(&quot;cv_inv_&quot; .. clues[locationId], &quot;1&quot;) - 완료 표시local done = getChatVar(&quot;cv_hotspot_done&quot;) or &quot;&quot; setChatVar(&quot;cv_hotspot_done&quot;, done .. &quot;,&quot; .. locationId) endend</code></li></ul></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80f4-b978-dc824157dc7b"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-8047-b7b7-f19e1a9c55fa" class=""><strong>6. 정규식 연동</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-802a-a6cc-ca94e8cbc1ab" class=""><strong>6.1 기존 정규식 유지</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8060-bb85-f4741208dbfa" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80ac-a8b7-fec1e622c08a"><th id="hjzV" class="simple-table-header-color simple-table-header"><strong>ID</strong></th><th id="TlAb" class="simple-table-header-color simple-table-header"><strong>기능</strong></th><th id="sBVB" class="simple-table-header-color simple-table-header"><strong>상태</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80ec-ab03-e53ca260ad81"><td id="hjzV" class="">01~24</td><td id="TlAb" class="">변수 파싱</td><td id="sBVB" class="">유지</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8027-bb89-f186c7d241c4"><td id="hjzV" class=""><strong>Copy table</strong></td><td id="TlAb" class=""></td><td id="sBVB" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80fc-9bfb-e518a78478e9" class=""><strong>6.2 새로운 정규식 (필요시)</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8007-bc3f-cab6544648e4" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8014-806a-f0377c4b960f" class=""><code>[정규식 25] 핫스팟 태그<br/>IN: {HOTSPOT}<br/>OUT: &lt;div class=&quot;hotspot-trigger&quot; data-floor=&quot;{{getvar::cv_floor}}&quot; data-step=&quot;{{getvar::cv_step}}&quot;&gt;📍 현재 위치 조사&lt;/div&gt;<br/>타입: 디스플레이 수정<br/><br/>[정규식 26] 스마트폰 트리거<br/>IN: {PHONE}<br/>OUT: &lt;div class=&quot;phone-trigger&quot;&gt;📱 스마트폰&lt;/div&gt;<br/>타입: 디스플레이 수정</code></p></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80cd-a89c-e35e7396b97c"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-80db-8c2d-cf64c6c536b8" class=""><strong>7. CSS 설계</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80e6-bd78-e7f8ba09b966" class=""><strong>7.1 백그라운드 임베딩 위치</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8066-898b-d231fb994d30" class="">CSS는 <strong>백그라운드 임베딩</strong>에<code>&lt;style&gt;</code> 태그 없이 직접 입력합니다.</p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80f0-a56d-de1a6c4ab060" class=""><strong>7.2 클래스 명명 규칙</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80fe-a01d-eede056036c3" class="">CSS</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80e6-a43c-d63ee72e83c9" class=""><code>/* RisuAI가 x-risu- 접두사 자동 추가 */<br/>/* 작성: .phone-popup → 실제: .x-risu-phone-popup */<br/><br/>.phone-popup { ... }<br/>.phone-tab { ... }<br/>.phone-panel { ... }<br/>.hotspot-container { ... }<br/>.hotspot-btn { ... }<br/>.hotspot-btn--active { ... }<br/>.hotspot-btn--disabled { ... }<br/>.hotspot-btn--done { ... }</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80bf-b2bc-ccb3a3f5bb17" class=""><strong>7.3 주요 스타일</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80be-ace0-e2d32c6f256d" class="">CSS</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-807b-ba84-d68b94300605" class=""><code>/* 스마트폰 팝업 */<br/>.phone-popup {<br/>  position: absolute;<br/>  top: 20px;<br/>  right: 20px;<br/>  width: 320px;<br/>  max-height: 80vh;<br/>  background: rgba(0, 0, 0, 0.85);<br/>  border-radius: 12px;<br/>  overflow: hidden;<br/>  display: none; /* 기본 숨김 */<br/>}<br/><br/>.phone-popup.active {<br/>  display: block;<br/>}<br/><br/>/* 핫스팟 버튼 */<br/>.hotspot-btn {<br/>  padding: 8px 16px;<br/>  background: rgba(255, 255, 255, 0.1);<br/>  border: 1px solid rgba(255, 255, 255, 0.3);<br/>  border-radius: 6px;<br/>  cursor: pointer;<br/>  transition: all 0.2s;<br/>}<br/><br/>.hotspot-btn:hover {<br/>  background: rgba(255, 255, 255, 0.2);<br/>}<br/><br/>.hotspot-btn--done {<br/>  opacity: 0.5;<br/>  text-decoration: line-through;<br/>}<br/><br/>.hotspot-btn--danger {<br/>  border-color: #ff4444;<br/>}</code></p></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80a2-b3b5-e7a243ef4645"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-80cf-b3bf-cd0683540547" class=""><strong>8. 플러그인 JavaScript 구조</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8013-b2f3-f57cbb029576" class=""><strong>8.1 파일 구성</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80a8-9c4e-df46c583ebf7" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80e6-ab31-fea83b135d5c" class=""><code>plugins/<br/>└── dogoei_ui_v2.0.js<br/>    ├── [상수] FLOOR_OBJECTS 데이터<br/>    ├── [함수] renderPhoneUI()<br/>    ├── [함수] renderHotspot(floor, step)<br/>    ├── [함수] syncChatVars()<br/>    ├── [함수] handleButtonClick(action, params)<br/>    ├── [함수] pollPending()<br/>    └── [초기화] DOM 감시 + 이벤트 바인딩</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8077-941b-f3e834568fc9" class=""><strong>8.2 핵심 함수</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-805e-816d-fca70fc740b9" class="">JavaScript</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-801f-b34a-d4b44fbb2fbe" class=""><code>// chatVar 동기화<br/>async function syncChatVars() {<br/>  const vars = [<br/>    &#x27;cv_floor&#x27;, &#x27;cv_step&#x27;, &#x27;cv_battery&#x27;, &#x27;cv_signal&#x27;,<br/>    &#x27;cv_companion&#x27;, &#x27;cv_aff_seo&#x27;, &#x27;cv_aff_oh&#x27;, &#x27;cv_aff_kang&#x27;,<br/>    &#x27;cv_aff_lee&#x27;, &#x27;cv_aff_jung&#x27;, &#x27;cv_hotspot_done&#x27;, &#x27;cv_phone_open&#x27;<br/>  ];<br/><br/>  for (const v of vars) {<br/>    const el = document.querySelector(`[data-var=&quot;${v}&quot;]`);<br/>    if (el) {<br/>      const value = await getChatVar(v);<br/>      el.textContent = formatValue(v, value);<br/>    }<br/>  }<br/>}<br/><br/>// 핫스팟 렌더링<br/>function renderHotspot(floor, step) {<br/>  const container = document.querySelector(&#x27;.hotspot-container&#x27;);<br/>  if (!container) return;<br/><br/>  const objects = FLOOR_OBJECTS[floor];<br/>  if (!objects) return;<br/><br/>  // step 조건 필터링<br/>  const available = objects.filter(obj =&gt; {<br/>    if (obj.step_min &amp;&amp; step &lt; obj.step_min) return false;<br/>    if (obj.step_max &amp;&amp; step &gt; obj.step_max) return false;<br/>    return true;<br/>  });<br/><br/>  // 버튼 생성<br/>  container.innerHTML = available.map(obj =&gt; {<br/>    const done = isDone(obj.id);<br/>    const hasReq = checkRequirement(obj.requires);<br/><br/>    return `<br/>      &lt;button class=&quot;hotspot-btn ${done ? &#x27;hotspot-btn--done&#x27; : &#x27;&#x27;} ${obj.danger ? &#x27;hotspot-btn--danger&#x27; : &#x27;&#x27;}&quot;<br/>              data-action=&quot;${obj.type}&quot;<br/>              data-id=&quot;${obj.id}&quot;<br/>              ${!hasReq ? &#x27;disabled&#x27; : &#x27;&#x27;}&gt;<br/>        ${obj.label}<br/>      &lt;/button&gt;<br/>    `;<br/>  }).join(&#x27;&#x27;);<br/><br/>  // 이벤트 바인딩<br/>  container.querySelectorAll(&#x27;.hotspot-btn&#x27;).forEach(btn =&gt; {<br/>    btn.addEventListener(&#x27;click&#x27;, () =&gt; handleHotspotClick(btn));<br/>  });<br/>}<br/><br/>// 버튼 클릭 → Lua 전달<br/>async function handleHotspotClick(btn) {<br/>  const action = btn.dataset.action;<br/>  const id = btn.dataset.id;<br/><br/>  // RisuAI API로 Lua 트리거 호출<br/>  await triggerLua(`onButtonClick(&#x27;${action}&#x27;, &#x27;${id}&#x27;)`);<br/>}</code></p></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80d9-a90d-c8b2e70a439a"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-80c1-9683-ff29a0e306aa" class=""><strong>9. 구현 순서</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8036-8fb7-e60b5e5cba62" class=""><strong>9.1 Phase 1: 기반 구축</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-808f-beee-d0daf33b6a2b" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8053-a7b6-d1f15544a9e6"><th id="{wEO" class="simple-table-header-color simple-table-header"><strong>순서</strong></th><th id="|^zM" class="simple-table-header-color simple-table-header"><strong>작업</strong></th><th id="VVvb" class="simple-table-header-color simple-table-header"><strong>산출물</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80d4-ac6e-d6f68e367edb"><td id="{wEO" class="">1</td><td id="|^zM" class="">CSS 작성</td><td id="VVvb" class="">백그라운드 임베딩용 CSS</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8028-8c7d-f4f0a310f7c3"><td id="{wEO" class="">2</td><td id="|^zM" class="">플러그인 스켈레톤</td><td id="VVvb" class="">dogoei_ui_v2.0.js 기본 구조</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80f1-9537-f217fcd74cb7"><td id="{wEO" class="">3</td><td id="|^zM" class="">스마트폰 팝업 UI</td><td id="VVvb" class="">HTML 템플릿 + JS 렌더링</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8087-aaec-dde09d11eab6"><td id="{wEO" class="">4</td><td id="|^zM" class="">chatVar 읽기 함수</td><td id="VVvb" class="">RisuAI API 연동</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8076-aeeb-e8646dcb0b74"><td id="{wEO" class=""><strong>Copy table</strong></td><td id="|^zM" class=""></td><td id="VVvb" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80c1-bfd6-f19564f44029" class=""><strong>9.2 Phase 2: 핫스팟</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8064-8463-cdbe15ba98f9" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8022-a9ad-f335848d1c82"><th id="IkiA" class="simple-table-header-color simple-table-header"><strong>순서</strong></th><th id="=dKR" class="simple-table-header-color simple-table-header"><strong>작업</strong></th><th id="sePw" class="simple-table-header-color simple-table-header"><strong>산출물</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80d8-8b2c-ceaa85b9627d"><td id="IkiA" class="">5</td><td id="=dKR" class="">FLOOR_OBJECTS 데이터</td><td id="sePw" class="">Lua + JS 동기화</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-802b-a956-e495042d03dd"><td id="IkiA" class="">6</td><td id="=dKR" class="">핫스팟 버튼 렌더링</td><td id="sePw" class="">조건부 활성화 로직</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8015-bb92-f8fa659bbc6c"><td id="IkiA" class="">7</td><td id="=dKR" class="">버튼 클릭 → Lua 연동</td><td id="sePw" class="">onButtonClick 확장</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-805e-85ff-db67b3828e6b"><td id="IkiA" class="">8</td><td id="=dKR" class="">정규식 태그 파싱</td><td id="sePw" class="">{HOTSPOT} 처리</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80fa-805d-f3f799612f12"><td id="IkiA" class=""><strong>Copy table</strong></td><td id="=dKR" class=""></td><td id="sePw" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8074-8e77-ef138af3ad9a" class=""><strong>9.3 Phase 3: 통합</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8053-a80b-d3da835d811d" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80d7-82c0-c30c0a828f1a"><th id="zUZN" class="simple-table-header-color simple-table-header"><strong>순서</strong></th><th id="PxWw" class="simple-table-header-color simple-table-header"><strong>작업</strong></th><th id="RzFQ" class="simple-table-header-color simple-table-header"><strong>산출물</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80c6-ad14-e1e57dcf5e4a"><td id="zUZN" class="">9</td><td id="PxWw" class="">스마트폰 + 핫스팟 통합 테스트</td><td id="RzFQ" class="">전체 플로우 검증</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-801d-ab2a-d5c08fa540ba"><td id="zUZN" class="">10</td><td id="PxWw" class="">토큰 최적화</td><td id="RzFQ" class="">불필요한 렌더링 제거</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-801b-9e7a-f5148a50de4d"><td id="zUZN" class="">11</td><td id="PxWw" class="">버그 수정</td><td id="RzFQ" class="">안정화</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8091-b3b9-e03fea1be28c"><td id="zUZN" class="">12</td><td id="PxWw" class="">문서화</td><td id="RzFQ" class="">최종 기획서 업데이트</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80b5-81f5-f46a13ecb69d"><td id="zUZN" class=""><strong>Copy table</strong></td><td id="PxWw" class=""></td><td id="RzFQ" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-8068-8ddc-c789487ac7a6"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-8077-9299-dc7409d9a89b" class=""><strong>10. 토큰 예산</strong></h1></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-80ba-a936-e5f28e604116" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8067-9315-e725cf940bac"><th id="&gt;HoM" class="simple-table-header-color simple-table-header"><strong>구성요소</strong></th><th id="@ty@" class="simple-table-header-color simple-table-header"><strong>예상 토큰</strong></th><th id="@hN&gt;" class="simple-table-header-color simple-table-header"><strong>비고</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80f1-b285-e5e91542d10b"><td id="&gt;HoM" class="">Lua 스크립트</td><td id="@ty@" class="">~500</td><td id="@hN&gt;" class="">기존 유지</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-804a-855c-e7316a129df5"><td id="&gt;HoM" class="">플러그인 JS</td><td id="@ty@" class="">~800</td><td id="@hN&gt;" class="">새로 작성</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80b0-9b87-e18c42ff088b"><td id="&gt;HoM" class="">CSS</td><td id="@ty@" class="">~300</td><td id="@hN&gt;" class="">백그라운드 임베딩</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-805c-82fd-cecad67d0a1d"><td id="&gt;HoM" class="">정규식 추가</td><td id="@ty@" class="">~100</td><td id="@hN&gt;" class="">2개 신규</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80ea-b1fd-d2ce305dd9bb"><td id="&gt;HoM" class="">로어북 영역</td><td id="@ty@" class="">~15,000</td><td id="@hN&gt;" class="">기존 유지</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8052-aba2-de4bb2d94472"><td id="&gt;HoM" class=""><strong>합계</strong></td><td id="@ty@" class="">~16,700</td><td id="@hN&gt;" class="">컨텍스트 여유 있음</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8047-87b4-ce8fb0382480"><td id="&gt;HoM" class=""><strong>Copy table</strong></td><td id="@ty@" class=""></td><td id="@hN&gt;" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80cd-9f69-d0de267dda1e"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-8035-b4d7-fc361f619da3" class=""><strong>11. 리스크 및 대응</strong></h1></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-801c-9084-dc982d9d52df" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-804f-9061-e384ee0ad5f2"><th id="&gt;O|&gt;" class="simple-table-header-color simple-table-header"><strong>리스크</strong></th><th id="^HMj" class="simple-table-header-color simple-table-header"><strong>가능성</strong></th><th id="rHO{" class="simple-table-header-color simple-table-header"><strong>대응</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80cb-8774-d4a2851887f6"><td id="&gt;O|&gt;" class="">플러그인 API 제약</td><td id="^HMj" class="">중</td><td id="rHO{" class="">RisuAI v2026.1.90 가이드 확인, 폴백 UI 준비</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80ed-a494-fa626bc52aaa"><td id="&gt;O|&gt;" class="">chatVar 동기화 지연</td><td id="^HMj" class="">중</td><td id="rHO{" class="">30초 폴링 + 수동 새로고침 버튼</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-809c-8e66-c0a24b7b3243"><td id="&gt;O|&gt;" class="">토큰 초과</td><td id="^HMj" class="">낮음</td><td id="rHO{" class="">CSS/JS 최소화, 동적 로딩</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80d1-8112-e12bccf0f297"><td id="&gt;O|&gt;" class="">브라우저 호환성</td><td id="^HMj" class="">낮음</td><td id="rHO{" class="">최신 Chrome/Firefox 기준</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80ff-a083-cd36dacee727"><td id="&gt;O|&gt;" class=""><strong>Copy table</strong></td><td id="^HMj" class=""></td><td id="rHO{" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-8001-a11d-d343a2b82a69"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-802c-aea9-e8b98660f01d" class=""><strong>12. 다음 단계</strong></h1></div><div style="display:contents" dir="auto"><ol type="1" id="33c28f16-1bf9-80e2-adfd-edc5166e2141" class="numbered-list" start="1"><li><strong>CSS 초안 작성</strong> — 스마트폰 팝업 + 핫스팟 버튼 스타일</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="33c28f16-1bf9-8087-a6c6-f763b7e34a9f" class="numbered-list" start="2"><li><strong>플러그인 v2.0 JS 작성</strong> — 스켈레톤부터 시작</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="33c28f16-1bf9-80b4-bfa9-ea3679d779ad" class="numbered-list" start="3"><li><strong>Lua onButtonClick 확장</strong> — 조사 처리 로직</li></ol></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80df-9c10-cbc549c6bc45"/></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80ab-addc-c255a4985924" class=""><em>기획서 끝 — 도괴 플러그인 UI v2.0</em></p></div><div style="display:contents" dir="auto"><blockquote id="33c28f16-1bf9-8019-8240-f3c15bd480fd" class=""><strong>버전</strong>: v2.0 기획서<div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8007-948c-fda0b9370ccc" class=""><strong>작성일</strong>: 2026-03-16</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80d6-9e3f-db8eca77ff4f" class=""><strong>아키텍처</strong>: B플랜 (플러그인 중심)</p></div></blockquote></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80aa-9f61-c39c38a32856"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-806e-9225-d40f45a956ac" class=""><strong>1. 개요</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80f4-b61f-ff64674e49d2" class=""><strong>1.1 목표</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8022-ab3a-fc3a849b61e6" class="">기존 v1.0 스마트폰 UI를 확장하여 <strong>스마트폰 팝업 + 방 탐색 핫스팟</strong>을 통합 구현합니다.</p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8077-9c71-d03d62078866" class=""><strong>1.2 핵심 원칙</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-80c5-a47d-f1b01838f18b" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80a0-bcd9-c18466813fa3"><th id="GFNw" class="simple-table-header-color simple-table-header"><strong>원칙</strong></th><th id="KDqj" class="simple-table-header-color simple-table-header"><strong>설명</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-805a-ace0-dea3c5c5aa7c"><td id="GFNw" class=""><strong>상태 유지</strong></td><td id="KDqj" class="">팝업 열림/닫힘, 탭 선택 상태를 플러그인이 관리</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8099-8d0a-ccb6c0780f22"><td id="GFNw" class=""><strong>실시간 동기화</strong></td><td id="KDqj" class="">Lua chatVar를 JS가 직접 읽어 UI에 반영</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80af-aae9-cc324d587bed"><td id="GFNw" class=""><strong>토큰 최소화</strong></td><td id="KDqj" class="">AI는<code>{PHONE}``{HOTSPOT}</code> 태그만 출력, 렌더링은 플러그인</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80e8-b134-e5ec7d7c2fa5"><td id="GFNw" class=""><strong>기존 자산 활용</strong></td><td id="KDqj" class="">Lua v1, 로어북 v3, 정규식 24종 그대로 사용</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8044-9561-d7e85401818d"><td id="GFNw" class=""><strong>Copy table</strong></td><td id="KDqj" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-802a-be23-ce96d297ff85"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-80ce-8608-d3e53d56a90c" class=""><strong>2. 아키텍처</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80ed-ae14-de376dc70ae7" class=""><strong>2.1 계층 구조</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80fb-9758-d695cdf01566" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8054-80d9-d49236a0703d" class=""><code>┌─────────────────────────────────────────────────────────────┐<br/>│                      AI 응답 (서사 텍스트)                    │<br/>│  {PHONE} 태그 또는 {HOTSPOT|floor|step} 태그 포함            │<br/>└─────────────────────────────────────────────────────────────┘<br/>                              ↓<br/>┌─────────────────────────────────────────────────────────────┐<br/>│                   정규식 (editDisplay)                       │<br/>│  - {PHONE} → &lt;div class=&quot;phone-trigger&quot;&gt;...&lt;/div&gt;           │<br/>│  - {HOTSPOT|...} → &lt;div class=&quot;hotspot-container&quot;&gt;...&lt;/div&gt;  │<br/>│  - META 블록 숨김                                            │<br/>└─────────────────────────────────────────────────────────────┘<br/>                              ↓<br/>┌─────────────────────────────────────────────────────────────┐<br/>│                    플러그인 (JavaScript)                      │<br/>│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │<br/>│  │ 스마트폰 UI │  │  핫스팟 UI  │  │  상태 동기  │          │<br/>│  │ - 팝업 관리 │  │ - 버튼 생성 │  │ - chatVar  │          │<br/>│  │ - 탭 전환   │  │ - 클릭 처리 │  │   읽기      │          │<br/>│  │ - 데이터    │  │ - 조사 결과 │  │ - pending  │          │<br/>│ │   렌더링    │  │             │  │   처리      │          │<br/>│  └─────────────┘  └─────────────┘  └─────────────┘          │<br/>└─────────────────────────────────────────────────────────────┘<br/>                              ↓<br/>┌─────────────────────────────────────────────────────────────┐<br/>│                      Lua 트리거                              │<br/>│  - onStart: 초기화                                           │<br/>│  - editOutput: 태그 파싱 + 변수 저장                         │<br/>│  - onButtonClick: 버튼 클릭 → 조사 처리                      │<br/>└─────────────────────────────────────────────────────────────┘</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8050-8016-cd450ce22957" class=""><strong>2.2 데이터 흐름</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80bb-ba00-d9338a5d5c9e" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8074-a787-f22fa6739939" class=""><code>[AI 응답]<br/>    │<br/>    ├─ 서사 텍스트<br/>    │<br/>    └─ {ACTION|investigate|514} 태그<br/>           ↓<br/>    [정규식 editOutput]<br/>           │<br/>           └─ setChatVar(&quot;cv_pending_action&quot;, &quot;investigate|514&quot;)<br/>           ↓<br/>    [플러그인 폴링]<br/>           │<br/>           └─ pending 감지 → 버튼 렌더링<br/>           ↓<br/>    [유저 클릭]<br/>           │<br/>           └─ onButtonClick(&quot;investigate&quot;, &quot;514&quot;)<br/>           ↓<br/>    [Lua 처리]<br/>           │<br/>           └─ 단서 발견 로직 실행</code></p></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80d5-a950-ea2e04621a4a"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-8056-800d-d3f485a0f508" class=""><strong>3. 스마트폰 UI 설계</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-806a-b961-ed9879aca111" class=""><strong>3.1 구조</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80b8-8277-da1da8fd4be8" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-808f-b66d-f1c1168d0ca7" class=""><code>┌─────────────────────────────────┐<br/>│  📱 [닫기]         23:45        │  ← 헤더<br/>├─────────────────────────────────┤<br/>│                                 │<br/>│  [탭 아이콘 5개]                │  ← 탭 네비게이션<br/>│  📊  🎒  📞  💬  🖼️            │<br/>│                                 │<br/>├─────────────────────────────────┤<br/>│                                 │<br/>│  [현재 탭 내용]                 │  ← 탭 패널<br/>│                                 │<br/>│  - status: 배터리, 신호, 시간   │<br/>│    층, 위치, 동행, 호감도       │<br/>│                                 │<br/>│  - inv: 소지품 + 단서 목록      │<br/>│                                 │<br/>│  - contacts: 5인 연락처         │<br/>│                                 │<br/>│  - msg: 단톡방 + 개인톡        │<br/>│                                 │<br/>│  - gallery: CG + 업적          │<br/>│                                 │<br/>└─────────────────────────────────┘</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-801d-9c47-d57d06dbba90" class=""><strong>3.2 탭 상세</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8088-a18c-f13539dd0306" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80eb-9f09-c120e3d43312"><th id="Jp~y" class="simple-table-header-color simple-table-header"><strong>탭</strong></th><th id="f=Tl" class="simple-table-header-color simple-table-header"><strong>ID</strong></th><th id="&gt;\rV" class="simple-table-header-color simple-table-header"><strong>내용</strong></th><th id="PFDp" class="simple-table-header-color simple-table-header"><strong>데이터 소스</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80df-a923-f51d7e160b8b"><td id="Jp~y" class="">상태</td><td id="f=Tl" class=""><code>status</code></td><td id="&gt;\rV" class="">배터리, 신호, 시간, 층, 위치, 동행, 호감도(5인)</td><td id="PFDp" class="">chatVar 실시간</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80e1-a422-ec12a2fb11f1"><td id="Jp~y" class="">소지품</td><td id="f=Tl" class=""><code>inv</code></td><td id="&gt;\rV" class="">도구 목록 + 단서 목록 (획득 시 체크)</td><td id="PFDp" class=""><code>cv_inv_*</code></td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-806e-a78f-f4d8f2754165"><td id="Jp~y" class="">연락처</td><td id="f=Tl" class=""><code>contacts</code></td><td id="&gt;\rV" class="">5인 프로필 + 전화 아이콘</td><td id="PFDp" class="">고정 +<code>cv_met_*</code></td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8068-8c8e-db62612f8693"><td id="Jp~y" class="">메시지</td><td id="f=Tl" class=""><code>msg</code></td><td id="&gt;\rV" class="">단톡방 + 개인톡 목록</td><td id="PFDp" class=""><code>cv_contact_*</code></td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80e2-8402-cfac09c2d96a"><td id="Jp~y" class="">갤러리</td><td id="f=Tl" class=""><code>gallery</code></td><td id="&gt;\rV" class="">CG 슬롯 (텍스트) + 업적</td><td id="PFDp" class=""><code>cv_ach_*</code></td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8085-8ee2-c7de0495bac3"><td id="Jp~y" class=""><strong>Copy table</strong></td><td id="f=Tl" class=""></td><td id="&gt;\rV" class=""></td><td id="PFDp" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8076-b25b-edca3e3d1275" class=""><strong>3.3 호감도 표시</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8005-b3f1-f186d2c58842" class="">HTML</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8067-9355-f062c99e4693" class=""><code>&lt;!-- 플러그인에서 생성 --&gt;<br/>&lt;div class=&quot;aff-stars&quot;&gt;<br/>  &lt;span class=&quot;npc-name&quot;&gt;서준혁&lt;/span&gt;<br/>  &lt;span class=&quot;stars&quot;&gt;<br/>    &lt;!-- cv_aff_seo 값을 읽어 별표 렌더링 --&gt;<br/>    ★★★☆☆ (3/5)<br/>  &lt;/span&gt;<br/>&lt;/div&gt;</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80f2-a5e5-d84445e69005" class=""><strong>3.4 팝업 동작</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8022-8622-ed966d9e8fe8" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80db-b916-ef954eb13faa"><th id="KeN~" class="simple-table-header-color simple-table-header"><strong>동작</strong></th><th id="V^kr" class="simple-table-header-color simple-table-header"><strong>구현</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80ab-8de5-e419b87bf141"><td id="KeN~" class="">열기</td><td id="V^kr" class=""><code>{PHONE}</code> 태그 감지 → 플러그인이 팝업 표시</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80e1-895d-f14a5a4f29c3"><td id="KeN~" class="">닫기</td><td id="V^kr" class="">닫기 버튼 클릭 → 팝업 숨김</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-801d-8c8d-f36562f543d4"><td id="KeN~" class="">탭 전환</td><td id="V^kr" class="">탭 아이콘 클릭 → 해당 패널 표시 (상태는 메모리 유지)</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80ae-8ddf-f56a41932d68"><td id="KeN~" class="">상태 동기</td><td id="V^kr" class="">30초마다 chatVar 재조회 → UI 갱신</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-809f-8c03-c317c24d5f49"><td id="KeN~" class=""><strong>Copy table</strong></td><td id="V^kr" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-807e-8cbf-dccada36cd05"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-80cc-acfb-f5060ad4dbb0" class=""><strong>4. 방 탐색 핫스팟 설계</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-800f-bff4-c1e3fe2e1177" class=""><strong>4.1 구조</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80cc-87da-d3a34870f560" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8043-b8bb-cbba368429c6" class=""><code>┌─────────────────────────────────────────────────────────────┐<br/>│  현재 층: 5F 게스트 라운지                                  │<br/>├─────────────────────────────────────────────────────────────┤<br/>│                                                             │<br/>│  ┌─────────┐  ┌─────────┐  ┌─────────┐                     │<br/>│  │ 514호   │  │ 비상함  │  │ 라운지  │                     │<br/>│  │ [조사]  │  │ [조사]  │  │ [대화]  │                     │<br/>│  └─────────┘  └─────────┘  └─────────┘                     │<br/>│                                                             │<br/>│  ┌─────────┐  ┌─────────┐  ┌─────────┐                     │<br/>│  │ 복도    │  │ 계단    │  │ 엘리베  │                     │<br/>│  │ [이동]  │  │ [이동]  │  │ [이동]  │                     │<br/>│  └─────────┘  └─────────┘  └─────────┘                     │<br/>│                                                             │<br/>└─────────────────────────────────────────────────────────────┘</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80f5-91a6-e4ee991a0a0b" class=""><strong>4.2 버튼 타입</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-80bd-a3d0-e9e905c21301" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8036-a7ba-c5c4c891ab3b"><th id="e=ft" class="simple-table-header-color simple-table-header"><strong>타입</strong></th><th id="aB~i" class="simple-table-header-color simple-table-header"><strong>동작</strong></th><th id="cM{Q" class="simple-table-header-color simple-table-header"><strong>예시</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8043-b52d-fa4d16550d4e"><td id="e=ft" class=""><code>investigate</code></td><td id="aB~i" class="">단서/아이템 조사</td><td id="cM{Q" class="">514호 문틀 조사</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8094-9002-c58f771f4e6b"><td id="e=ft" class=""><code>move</code></td><td id="aB~i" class="">층 이동</td><td id="cM{Q" class="">4F로 이동</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8026-b3d9-e659897a56f4"><td id="e=ft" class=""><code>talk</code></td><td id="aB~i" class="">NPC 대화</td><td id="cM{Q" class="">서준혁과 대화</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8090-8c83-dce26f825ad4"><td id="e=ft" class=""><code>action</code></td><td id="aB~i" class="">특수 행동</td><td id="cM{Q" class="">도구 사용, 문 열기</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8056-bacb-e2e27519df77"><td id="e=ft" class=""><strong>Copy table</strong></td><td id="aB~i" class=""></td><td id="cM{Q" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-805f-8095-d00ecdb11d46" class=""><strong>4.3 버튼 상태</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8039-b388-e2d4fd7532c6" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8002-993f-e607afa0477d"><th id="ZBkc" class="simple-table-header-color simple-table-header"><strong>상태</strong></th><th id="&gt;G:t" class="simple-table-header-color simple-table-header"><strong>CSS 클래스</strong></th><th id="I;C`" class="simple-table-header-color simple-table-header"><strong>설명</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8082-8b50-c01b41031b7e"><td id="ZBkc" class="">활성</td><td id="&gt;G:t" class=""><code>.hotspot-btn--active</code></td><td id="I;C`" class="">조사 가능</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8080-9baf-d3d281ebd523"><td id="ZBkc" class="">비활성</td><td id="&gt;G:t" class=""><code>.hotspot-btn--disabled</code></td><td id="I;C`" class="">도구 필요 / 조건 미충족</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80b3-9fdc-c41b22aeacd3"><td id="ZBkc" class="">완료</td><td id="&gt;G:t" class=""><code>.hotspot-btn--done</code></td><td id="I;C`" class="">이미 조사 완료</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80fc-90dd-ddda5298f262"><td id="ZBkc" class="">위험</td><td id="&gt;G:t" class=""><code>.hotspot-btn--danger</code></td><td id="I;C`" class="">위험 구역 경고</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8040-a1a7-e8e73ba14331"><td id="ZBkc" class=""><strong>Copy table</strong></td><td id="&gt;G:t" class=""></td><td id="I;C`" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8091-ae5d-d7502055c0ae" class=""><strong>4.4 데이터 구조</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-802a-ad0a-ffdd2edc030a" class="">JavaScript</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80d8-b95d-c336c4c177cf" class=""><code>// Lua: FLOOR_OBJECTS 데이터<br/>const FLOOR_OBJECTS = {<br/>  &quot;5&quot;: { // 5F<br/>    &quot;step_3+&quot;: [ // step 3 이후부터 표시<br/>      {<br/>        id: &quot;514&quot;,<br/>        type: &quot;investigate&quot;,<br/>        label: &quot;514호 문틀&quot;,<br/>        requires: null, // 도구 필요 없음<br/>        gives: &quot;doorframe&quot;, // 획득 단서<br/>        danger: false<br/>      },<br/>      {<br/>        id: &quot;emergency_box&quot;,<br/>        type: &quot;investigate&quot;,<br/>        label: &quot;비상함&quot;,<br/>        requires: null,<br/>        gives: [&quot;flashlight&quot;, &quot;medkit&quot;],<br/>        danger: false<br/>      },<br/>      {<br/>        id: &quot;corridor_down&quot;,<br/>        type: &quot;move&quot;,<br/>        label: &quot;4층으로&quot;,<br/>        target_floor: 4,<br/>        requires: null,<br/>        danger: false<br/>      }<br/>    ]<br/>  },<br/>  &quot;6&quot;: { // 6F<br/>    &quot;step_3+&quot;: [<br/>      {<br/>        id: &quot;pool&quot;,<br/>        type: &quot;investigate&quot;,<br/>        label: &quot;수영장&quot;,<br/>        requires: &quot;flashlight&quot;, // 손전등 필요<br/>        danger: true, // 감전 위험<br/>        gives: &quot;doc_pool&quot;<br/>      }<br/>    ]<br/>  }<br/>  // ...<br/>};</code></p></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80c0-9e74-e8641117af96"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-80f9-a118-d7152475e83c" class=""><strong>5. Lua 연동</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8034-a9e9-e2184a38d56a" class=""><strong>5.1 기존 변수 활용</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-80c8-9d7e-ec00a6d983d0" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-801d-a708-fc38ef441b03"><th id="j=&gt;;" class="simple-table-header-color simple-table-header"><strong>변수</strong></th><th id="fIxR" class="simple-table-header-color simple-table-header"><strong>용도</strong></th><th id="mde?" class="simple-table-header-color simple-table-header"><strong>UI 반영</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80c9-bd6d-c4165ca711fa"><td id="j=&gt;;" class=""><code>cv_floor</code></td><td id="fIxR" class="">현재 층</td><td id="mde?" class="">핫스팟 표시</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80e6-a542-ea8e45c04195"><td id="j=&gt;;" class=""><code>cv_step</code></td><td id="fIxR" class="">스토리 진행</td><td id="mde?" class="">버튼 활성화 조건</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-804e-a523-f943ddc158fb"><td id="j=&gt;;" class=""><code>cv_battery</code></td><td id="fIxR" class="">배터리 %</td><td id="mde?" class="">스마트폰 상태 탭</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80b7-889c-fa368d1a0c1b"><td id="j=&gt;;" class=""><code>cv_signal</code></td><td id="fIxR" class="">신호 강도</td><td id="mde?" class="">스마트폰 상태 탭</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-801e-a88a-f9cabb1e6d17"><td id="j=&gt;;" class=""><code>cv_companion</code></td><td id="fIxR" class="">동행 NPC</td><td id="mde?" class="">스마트폰 상태 탭</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8069-897c-cd6a068172bf"><td id="j=&gt;;" class=""><code>cv_aff_*</code></td><td id="fIxR" class="">호감도</td><td id="mde?" class="">스마트폰 상태 탭</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-806e-a414-c9b76319a228"><td id="j=&gt;;" class=""><code>cv_inv_*</code></td><td id="fIxR" class="">인벤토리</td><td id="mde?" class="">스마트폰 소지품 탭</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80b4-b247-d709d8af63e2"><td id="j=&gt;;" class=""><code>cv_pending_*</code></td><td id="fIxR" class="">대기 상태</td><td id="mde?" class="">플러그인 폴링</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80af-b3fd-e93d601a02cc"><td id="j=&gt;;" class=""><strong>Copy table</strong></td><td id="fIxR" class=""></td><td id="mde?" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-801a-9d63-d1b6dc05ca60" class=""><strong>5.2 새로운 변수 (필요시)</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80d7-b3d1-d69716fd3933" class="">Lua</p></div><div style="display:contents" dir="auto"><ul id="33c28f16-1bf9-80c5-93c1-dcdca9bdc6bd" class="bulleted-list"><li style="list-style-type:disc"><code>- 플러그인 상태<br/>cv_phone_open = &quot;0&quot; - 스마트폰 열림 상태 (0/1)<br/>cv_phone_tab = &quot;status&quot; - 현재 탭<br/>cv_hotspot_done = &quot;&quot; - 조사 완료 장소 (CSV: &quot;514,pool,machine&quot;)</code></li></ul></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8097-868e-ceda4e0ba3ff" class=""><strong>5.3 Lua onButtonClick 확장</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8060-8fc3-e2a5ed4ea65a" class="">Lua</p></div><div style="display:contents" dir="auto"><ul id="33c28f16-1bf9-8079-a989-d02b547bb8a0" class="bulleted-list"><li style="list-style-type:disc"><code>- 버튼 클릭 처리function onButtonClick(buttonId, param) if buttonId == &quot;investigate&quot; then- 조사 처리 handleInvestigate(param) elseif buttonId == &quot;move&quot; then- 층 이동 handleMove(param) elseif buttonId == &quot;phone_toggle&quot; then- 스마트폰 열기/닫기local current = getChatVar(&quot;cv_phone_open&quot;) or &quot;0&quot; setChatVar(&quot;cv_phone_open&quot;, current == &quot;0&quot; and &quot;1&quot; or &quot;0&quot;) elseif buttonId == &quot;phone_tab&quot; then- 탭 전환 setChatVar(&quot;cv_phone_tab&quot;, param) endendfunction handleInvestigate(locationId) - 단서 획득 처리local clues = { [&quot;514&quot;] = &quot;doorframe&quot;, [&quot;pool&quot;] = &quot;doc_pool&quot;, [&quot;emergency_box&quot;] = &quot;flashlight&quot; } if clues[locationId] then setChatVar(&quot;cv_inv_&quot; .. clues[locationId], &quot;1&quot;) - 완료 표시local done = getChatVar(&quot;cv_hotspot_done&quot;) or &quot;&quot; setChatVar(&quot;cv_hotspot_done&quot;, done .. &quot;,&quot; .. locationId) endend</code></li></ul></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80eb-a3e9-db35003a53a7"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-80e0-9cb9-dcffd9b0fb75" class=""><strong>6. 정규식 연동</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8046-9db0-fc6320fc39d8" class=""><strong>6.1 기존 정규식 유지</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8002-9552-e5a37523cfce" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80af-8bcc-c0fcf705040c"><th id="l&gt;sd" class="simple-table-header-color simple-table-header"><strong>ID</strong></th><th id="zrdA" class="simple-table-header-color simple-table-header"><strong>기능</strong></th><th id="`[m;" class="simple-table-header-color simple-table-header"><strong>상태</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-800a-bdd2-f9111b3dfbfe"><td id="l&gt;sd" class="">01~24</td><td id="zrdA" class="">변수 파싱</td><td id="`[m;" class="">유지</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80d7-9795-ea8e28394129"><td id="l&gt;sd" class=""><strong>Copy table</strong></td><td id="zrdA" class=""></td><td id="`[m;" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-805d-8f62-d615932b5741" class=""><strong>6.2 새로운 정규식 (필요시)</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80c2-be11-efdcfdcbe30f" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-806a-bf56-f06fdf1198aa" class=""><code>[정규식 25] 핫스팟 태그<br/>IN: {HOTSPOT}<br/>OUT: &lt;div class=&quot;hotspot-trigger&quot; data-floor=&quot;{{getvar::cv_floor}}&quot; data-step=&quot;{{getvar::cv_step}}&quot;&gt;📍 현재 위치 조사&lt;/div&gt;<br/>타입: 디스플레이 수정<br/><br/>[정규식 26] 스마트폰 트리거<br/>IN: {PHONE}<br/>OUT: &lt;div class=&quot;phone-trigger&quot;&gt;📱 스마트폰&lt;/div&gt;<br/>타입: 디스플레이 수정</code></p></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80ed-9f4c-c667c8330ba7"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-8018-8795-c63019cb031a" class=""><strong>7. CSS 설계</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80ac-a891-f2385456cac9" class=""><strong>7.1 백그라운드 임베딩 위치</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8023-829f-d451a290bc25" class="">CSS는 <strong>백그라운드 임베딩</strong>에<code>&lt;style&gt;</code> 태그 없이 직접 입력합니다.</p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8026-b46e-c40f4377ed05" class=""><strong>7.2 클래스 명명 규칙</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8049-98ca-d7641e6b6e05" class="">CSS</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-808f-b149-d759de8a236b" class=""><code>/* RisuAI가 x-risu- 접두사 자동 추가 */<br/>/* 작성: .phone-popup → 실제: .x-risu-phone-popup */<br/><br/>.phone-popup { ... }<br/>.phone-tab { ... }<br/>.phone-panel { ... }<br/>.hotspot-container { ... }<br/>.hotspot-btn { ... }<br/>.hotspot-btn--active { ... }<br/>.hotspot-btn--disabled { ... }<br/>.hotspot-btn--done { ... }</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8011-ba32-ffff49f0678a" class=""><strong>7.3 주요 스타일</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-800d-b69d-f2b33900ed7e" class="">CSS</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-8085-916b-f1b101c550e2" class=""><code>/* 스마트폰 팝업 */<br/>.phone-popup {<br/>  position: absolute;<br/>  top: 20px;<br/>  right: 20px;<br/>  width: 320px;<br/>  max-height: 80vh;<br/>  background: rgba(0, 0, 0, 0.85);<br/>  border-radius: 12px;<br/>  overflow: hidden;<br/>  display: none; /* 기본 숨김 */<br/>}<br/><br/>.phone-popup.active {<br/>  display: block;<br/>}<br/><br/>/* 핫스팟 버튼 */<br/>.hotspot-btn {<br/>  padding: 8px 16px;<br/>  background: rgba(255, 255, 255, 0.1);<br/>  border: 1px solid rgba(255, 255, 255, 0.3);<br/>  border-radius: 6px;<br/>  cursor: pointer;<br/>  transition: all 0.2s;<br/>}<br/><br/>.hotspot-btn:hover {<br/>  background: rgba(255, 255, 255, 0.2);<br/>}<br/><br/>.hotspot-btn--done {<br/>  opacity: 0.5;<br/>  text-decoration: line-through;<br/>}<br/><br/>.hotspot-btn--danger {<br/>  border-color: #ff4444;<br/>}</code></p></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-8091-9c45-f13c00109e75"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-80d7-937d-d408077c0c61" class=""><strong>8. 플러그인 JavaScript 구조</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80ed-b5d6-d3378dccfe2a" class=""><strong>8.1 파일 구성</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80f4-93cf-d4724749eeef" class="">Plain Text</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80b3-8ba8-f8be1918c0dd" class=""><code>plugins/<br/>└── dogoei_ui_v2.0.js<br/>    ├── [상수] FLOOR_OBJECTS 데이터<br/>    ├── [함수] renderPhoneUI()<br/>    ├── [함수] renderHotspot(floor, step)<br/>    ├── [함수] syncChatVars()<br/>    ├── [함수] handleButtonClick(action, params)<br/>    ├── [함수] pollPending()<br/>    └── [초기화] DOM 감시 + 이벤트 바인딩</code></p></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-800b-a90a-d4c1d42459d2" class=""><strong>8.2 핵심 함수</strong></h3></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80d0-a852-f147395196a9" class="">JavaScript</p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-805d-8cbd-fb8ee949bbd8" class=""><code>// chatVar 동기화<br/>async function syncChatVars() {<br/>  const vars = [<br/>    &#x27;cv_floor&#x27;, &#x27;cv_step&#x27;, &#x27;cv_battery&#x27;, &#x27;cv_signal&#x27;,<br/>    &#x27;cv_companion&#x27;, &#x27;cv_aff_seo&#x27;, &#x27;cv_aff_oh&#x27;, &#x27;cv_aff_kang&#x27;,<br/>    &#x27;cv_aff_lee&#x27;, &#x27;cv_aff_jung&#x27;, &#x27;cv_hotspot_done&#x27;, &#x27;cv_phone_open&#x27;<br/>  ];<br/><br/>  for (const v of vars) {<br/>    const el = document.querySelector(`[data-var=&quot;${v}&quot;]`);<br/>    if (el) {<br/>      const value = await getChatVar(v);<br/>      el.textContent = formatValue(v, value);<br/>    }<br/>  }<br/>}<br/><br/>// 핫스팟 렌더링<br/>function renderHotspot(floor, step) {<br/>  const container = document.querySelector(&#x27;.hotspot-container&#x27;);<br/>  if (!container) return;<br/><br/>  const objects = FLOOR_OBJECTS[floor];<br/>  if (!objects) return;<br/><br/>  // step 조건 필터링<br/>  const available = objects.filter(obj =&gt; {<br/>    if (obj.step_min &amp;&amp; step &lt; obj.step_min) return false;<br/>    if (obj.step_max &amp;&amp; step &gt; obj.step_max) return false;<br/>    return true;<br/>  });<br/><br/>  // 버튼 생성<br/>  container.innerHTML = available.map(obj =&gt; {<br/>    const done = isDone(obj.id);<br/>    const hasReq = checkRequirement(obj.requires);<br/><br/>    return `<br/>      &lt;button class=&quot;hotspot-btn ${done ? &#x27;hotspot-btn--done&#x27; : &#x27;&#x27;} ${obj.danger ? &#x27;hotspot-btn--danger&#x27; : &#x27;&#x27;}&quot;<br/>              data-action=&quot;${obj.type}&quot;<br/>              data-id=&quot;${obj.id}&quot;<br/>              ${!hasReq ? &#x27;disabled&#x27; : &#x27;&#x27;}&gt;<br/>        ${obj.label}<br/>      &lt;/button&gt;<br/>    `;<br/>  }).join(&#x27;&#x27;);<br/><br/>  // 이벤트 바인딩<br/>  container.querySelectorAll(&#x27;.hotspot-btn&#x27;).forEach(btn =&gt; {<br/>    btn.addEventListener(&#x27;click&#x27;, () =&gt; handleHotspotClick(btn));<br/>  });<br/>}<br/><br/>// 버튼 클릭 → Lua 전달<br/>async function handleHotspotClick(btn) {<br/>  const action = btn.dataset.action;<br/>  const id = btn.dataset.id;<br/><br/>  // RisuAI API로 Lua 트리거 호출<br/>  await triggerLua(`onButtonClick(&#x27;${action}&#x27;, &#x27;${id}&#x27;)`);<br/>}</code></p></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-801d-ae7e-f2202f573e07"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-800c-ac56-c0d0a69f2f92" class=""><strong>9. 구현 순서</strong></h1></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-8048-b2ee-ed0839240c1c" class=""><strong>9.1 Phase 1: 기반 구축</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-80c1-aaed-f1ea3345c9b2" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80eb-be33-dd5372371d6f"><th id="aODy" class="simple-table-header-color simple-table-header"><strong>순서</strong></th><th id="brPg" class="simple-table-header-color simple-table-header"><strong>작업</strong></th><th id="L\&gt;&gt;" class="simple-table-header-color simple-table-header"><strong>산출물</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8013-b3a6-ff613c9353f8"><td id="aODy" class="">1</td><td id="brPg" class="">CSS 작성</td><td id="L\&gt;&gt;" class="">백그라운드 임베딩용 CSS</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80e3-bc6e-cd6f871d6c32"><td id="aODy" class="">2</td><td id="brPg" class="">플러그인 스켈레톤</td><td id="L\&gt;&gt;" class="">dogoei_ui_v2.0.js 기본 구조</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80dc-b5c6-d94001279d2e"><td id="aODy" class="">3</td><td id="brPg" class="">스마트폰 팝업 UI</td><td id="L\&gt;&gt;" class="">HTML 템플릿 + JS 렌더링</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8011-9c83-dd43072d11cb"><td id="aODy" class="">4</td><td id="brPg" class="">chatVar 읽기 함수</td><td id="L\&gt;&gt;" class="">RisuAI API 연동</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8085-bed6-f36e85c624f8"><td id="aODy" class=""><strong>Copy table</strong></td><td id="brPg" class=""></td><td id="L\&gt;&gt;" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80f1-b4e3-e3fa1a8e7e23" class=""><strong>9.2 Phase 2: 핫스팟</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8058-b3a7-d349c39c4cb6" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80a5-baf3-f638039c456d"><th id="jobP" class="simple-table-header-color simple-table-header"><strong>순서</strong></th><th id="IFhA" class="simple-table-header-color simple-table-header"><strong>작업</strong></th><th id="w`MN" class="simple-table-header-color simple-table-header"><strong>산출물</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80cd-83af-c1e0700814b6"><td id="jobP" class="">5</td><td id="IFhA" class="">FLOOR_OBJECTS 데이터</td><td id="w`MN" class="">Lua + JS 동기화</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80bd-a016-e784f39d0fd7"><td id="jobP" class="">6</td><td id="IFhA" class="">핫스팟 버튼 렌더링</td><td id="w`MN" class="">조건부 활성화 로직</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80f5-86e7-fa98b9b5a5e8"><td id="jobP" class="">7</td><td id="IFhA" class="">버튼 클릭 → Lua 연동</td><td id="w`MN" class="">onButtonClick 확장</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80d4-b262-c2a4a5dac748"><td id="jobP" class="">8</td><td id="IFhA" class="">정규식 태그 파싱</td><td id="w`MN" class="">{HOTSPOT} 처리</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8048-89e8-ecc05c747a94"><td id="jobP" class=""><strong>Copy table</strong></td><td id="IFhA" class=""></td><td id="w`MN" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h3 id="33c28f16-1bf9-80be-b299-de73f9b49d3f" class=""><strong>9.3 Phase 3: 통합</strong></h3></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-8065-bed6-d76088f49f2d" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-808d-91c5-e00e31743c92"><th id="~Qzi" class="simple-table-header-color simple-table-header"><strong>순서</strong></th><th id="eUbH" class="simple-table-header-color simple-table-header"><strong>작업</strong></th><th id="aZYN" class="simple-table-header-color simple-table-header"><strong>산출물</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-809c-895e-c7bedb300cf6"><td id="~Qzi" class="">9</td><td id="eUbH" class="">스마트폰 + 핫스팟 통합 테스트</td><td id="aZYN" class="">전체 플로우 검증</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8052-b730-e64f3f01a7b9"><td id="~Qzi" class="">10</td><td id="eUbH" class="">토큰 최적화</td><td id="aZYN" class="">불필요한 렌더링 제거</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8025-8288-cd4c6a1e5e7a"><td id="~Qzi" class="">11</td><td id="eUbH" class="">버그 수정</td><td id="aZYN" class="">안정화</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8008-a879-df0dbc4c7238"><td id="~Qzi" class="">12</td><td id="eUbH" class="">문서화</td><td id="aZYN" class="">최종 기획서 업데이트</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80f7-b834-d6d75b3b4086"><td id="~Qzi" class=""><strong>Copy table</strong></td><td id="eUbH" class=""></td><td id="aZYN" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80b7-aeab-e87ffbf94f37"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-8012-83db-ded153d0b400" class=""><strong>10. 토큰 예산</strong></h1></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-805b-ba85-c2e924dd91c8" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8006-9c42-d11d9603747c"><th id="^^UY" class="simple-table-header-color simple-table-header"><strong>구성요소</strong></th><th id="y;&gt;D" class="simple-table-header-color simple-table-header"><strong>예상 토큰</strong></th><th id="UpZb" class="simple-table-header-color simple-table-header"><strong>비고</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8072-8b3d-d67bba0a9264"><td id="^^UY" class="">Lua 스크립트</td><td id="y;&gt;D" class="">~500</td><td id="UpZb" class="">기존 유지</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80be-853f-f904cdf31d52"><td id="^^UY" class="">플러그인 JS</td><td id="y;&gt;D" class="">~800</td><td id="UpZb" class="">새로 작성</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8029-8ba9-de8643df02af"><td id="^^UY" class="">CSS</td><td id="y;&gt;D" class="">~300</td><td id="UpZb" class="">백그라운드 임베딩</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80a2-a058-d5c03939bc1f"><td id="^^UY" class="">정규식 추가</td><td id="y;&gt;D" class="">~100</td><td id="UpZb" class="">2개 신규</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80b4-82a7-e7584d8912b0"><td id="^^UY" class="">로어북 영역</td><td id="y;&gt;D" class="">~15,000</td><td id="UpZb" class="">기존 유지</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8054-8b46-da3789c9d774"><td id="^^UY" class=""><strong>합계</strong></td><td id="y;&gt;D" class="">~16,700</td><td id="UpZb" class="">컨텍스트 여유 있음</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8034-922b-e0164f550615"><td id="^^UY" class=""><strong>Copy table</strong></td><td id="y;&gt;D" class=""></td><td id="UpZb" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-800e-b96a-f1324757367e"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-80e1-8e4d-c2540ba455e8" class=""><strong>11. 리스크 및 대응</strong></h1></div><div style="display:contents" dir="ltr"><table id="33c28f16-1bf9-80bb-a1b3-e2807ba68499" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-80f3-b364-dd8152e0b0e0"><th id="Y{u|" class="simple-table-header-color simple-table-header"><strong>리스크</strong></th><th id="pzN&gt;" class="simple-table-header-color simple-table-header"><strong>가능성</strong></th><th id="BY_o" class="simple-table-header-color simple-table-header"><strong>대응</strong></th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8005-a696-ffdca2540f1f"><td id="Y{u|" class="">플러그인 API 제약</td><td id="pzN&gt;" class="">중</td><td id="BY_o" class="">RisuAI 공식 문서 확인, 폴백 UI 준비</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-807f-8325-dca9eb4f382d"><td id="Y{u|" class="">chatVar 동기화 지연</td><td id="pzN&gt;" class="">중</td><td id="BY_o" class="">30초 폴링 + 수동 새로고침 버튼</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-8073-9002-c67e4b84bc7d"><td id="Y{u|" class="">토큰 초과</td><td id="pzN&gt;" class="">낮</td><td id="BY_o" class="">CSS/JS 최소화, 동적 로딩</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-809d-bf2c-f3ed0ba2e8fd"><td id="Y{u|" class="">브라우저 호환성</td><td id="pzN&gt;" class="">낮</td><td id="BY_o" class="">최신 Chrome/Fi기준</td></tr></div><div style="display:contents" dir="ltr"><tr id="33c28f16-1bf9-808c-87e7-c64c2026f1d8"><td id="Y{u|" class=""><strong>Copy table</strong></td><td id="pzN&gt;" class=""></td><td id="BY_o" class=""></td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80ab-a771-cb6e0a518d9a"/></div><div style="display:contents" dir="auto"><h1 id="33c28f16-1bf9-8022-b9fa-d6919fe22842" class=""><strong>12. 다음 단계</strong></h1></div><div style="display:contents" dir="auto"><ol type="1" id="33c28f16-1bf9-80ee-82a7-f08f5b0d2f8d" class="numbered-list" start="1"><li><strong>CSS 초안 작성</strong> — 스마트폰 팝업 + 핫스팟 버튼 스타일</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="33c28f16-1bf9-8076-9116-c16d1f462e8c" class="numbered-list" start="2"><li><strong>플러그인 v2.0 JS 작성</strong> — 스켈레톤부터 시작</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="33c28f16-1bf9-803a-9b6a-e00f04750013" class="numbered-list" start="3"><li><strong>Lua onButtonClick 확장</strong> — 조사 처리 로직</li></ol></div><div style="display:contents" dir="auto"><hr id="33c28f16-1bf9-80f5-89e0-c345627b0154"/></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-802a-a497-e6ff49e02cfe" class=""><em>기획서 끝 — 도괴 플러그인 UI v2.0</em></p></div><div style="display:contents" dir="auto"><p id="33c28f16-1bf9-80c6-b8bc-e88e267b6ce5" class="">
+</p></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

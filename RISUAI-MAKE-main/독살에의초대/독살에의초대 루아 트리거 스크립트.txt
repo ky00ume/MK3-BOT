@@ -1,0 +1,262 @@
+-- =====================================================
+-- 독살에의 초대 — RisuAI Lua Scripts v3
+-- =====================================================
+-- 실행 순서 (RisuAI):
+--   onInput → editInput → editDisplay → onStart →
+--   editDisplay → editRequest → editOutput → onOutput → editDisplay
+--
+-- 구조:
+--   1) onStart       : Active_Chars 설정 (1턴째, 1회만)
+--   2) editDisplay   : 파싱 태그 숨김 (매 렌더링)
+--   3) editOutput    : AI 응답 파싱 & 변수 저장
+-- =====================================================
+-- 글로벌 변수 (Lua 사용):
+--   Active_Chars     : Lua가 1턴에 설정 (ex. "CHAR_O01,CHAR_G01,CHAR_M03,...")
+--   Past_History     : Phase 2에서 AI → Lua 저장
+--   Char_Relations   : Phase 2에서 AI → Lua 저장
+--   Main_Scenario    : Phase 3에서 AI → Lua 저장 / scenario_update 시 덮어쓰기
+-- 설정 변수 (유저가 사전 설정):
+--   Total_Male       : 남성 풀 크기 (기본 12)
+--   Total_Female     : 여성 풀 크기 (기본 13)
+--   Total_Guest      : 고정 등장 게스트 수 (기본 0)
+--   Num_Male         : 랜덤 남성 슬롯 (기본 4, Guest에 의해 감소 가능)
+--   Num_Female       : 랜덤 여성 슬롯 (기본 4, Guest에 의해 감소 가능)
+-- =====================================================
+
+
+-- =====================================================
+-- [SCRIPT 1] onStart — 캐릭터 랜덤 선택 (1회)
+-- =====================================================
+
+function onStart(triggerId)
+  -- Active_Chars가 이미 설정되어 있으면 스킵
+  local activeChars = getChatVar(triggerId, "Active_Chars") or ""
+  if activeChars ~= "" and activeChars ~= "null" then return end
+
+  math.randomseed(os.time())
+
+  -- ─── 설정값 읽기 (글로벌 변수) ───
+  local totalMale   = tonumber(getChatVar(triggerId, "Total_Male"))   or 12
+  local totalFemale = tonumber(getChatVar(triggerId, "Total_Female")) or 13
+  local totalGuest  = tonumber(getChatVar(triggerId, "Total_Guest"))  or 0
+  local numMale     = tonumber(getChatVar(triggerId, "Num_Male"))     or 4
+  local numFemale   = tonumber(getChatVar(triggerId, "Num_Female"))   or 4
+
+  -- ─── 고정: CHAR_O01 ───
+  local selected = { "CHAR_O01" }
+
+  -- ─── Guest 처리: 전원 고정 등장 + M/F 슬롯 번갈아 감소 ───
+  if totalGuest > 0 then
+    for i = 1, totalGuest do
+      table.insert(selected, string.format("CHAR_G%02d", i))
+    end
+    local remaining = totalGuest
+    local reduceM = true
+    while remaining > 0 do
+      if reduceM then
+        if numMale > 0 then
+          numMale = numMale - 1
+        else
+          numFemale = numFemale - 1
+        end
+      else
+        if numFemale > 0 then
+          numFemale = numFemale - 1
+        else
+          numMale = numMale - 1
+        end
+      end
+      reduceM = not reduceM
+      remaining = remaining - 1
+    end
+  end
+
+  -- ─── Male 랜덤 추출 ───
+  if numMale > 0 then
+    local malePool = {}
+    for i = 1, totalMale do
+      table.insert(malePool, string.format("CHAR_M%02d", i))
+    end
+    for i = #malePool, 2, -1 do
+      local j = math.random(1, i)
+      malePool[i], malePool[j] = malePool[j], malePool[i]
+    end
+    for i = 1, numMale do
+      table.insert(selected, malePool[i])
+    end
+  end
+
+  -- ─── Female 랜덤 추출 ───
+  if numFemale > 0 then
+    local femalePool = {}
+    for i = 1, totalFemale do
+      table.insert(femalePool, string.format("CHAR_F%02d", i))
+    end
+    for i = #femalePool, 2, -1 do
+      local j = math.random(1, i)
+      femalePool[i], femalePool[j] = femalePool[j], femalePool[i]
+    end
+    for i = 1, numFemale do
+      table.insert(selected, femalePool[i])
+    end
+  end
+
+  -- ─── 저장 ───
+  for i = 1, #selected do
+    selected[i] = "[" .. selected[i] .. "]"
+  end
+  setChatVar(triggerId, "Active_Chars", table.concat(selected, ","))
+end
+
+
+-- =====================================================
+-- [SCRIPT 1.5] editRequest — Active_Chars 로어북 강제 주입
+-- =====================================================
+
+listenEdit('editRequest', function(triggerId, requestData)
+  local activeChars = getChatVar(triggerId, "Active_Chars") or ""
+  if activeChars == "" or activeChars == "null" then return requestData end
+
+  -- 이미 주입된 적 있는지 확인 (리퀘스트 내에 Active_Chars ID가 이미 존재하면 스킵)
+  local firstContent = ""
+  if requestData and #requestData > 0 then
+    for _, msg in ipairs(requestData) do
+      if msg.content then
+        firstContent = firstContent .. msg.content
+      end
+    end
+  end
+
+  -- Active_Chars에서 각 [CHAR_XXX]를 추출
+  local injected = {}
+  for charId in string.gmatch(activeChars, "%[([^%]]+)%]") do
+    -- 이미 리퀘스트에 해당 로어북 내용이 포함되어 있으면 스킵
+    local loreBooks = getLoreBooks(triggerId, "[" .. charId .. "]")
+    if loreBooks and #loreBooks > 0 then
+      for _, lore in ipairs(loreBooks) do
+        if lore.content and lore.content ~= "" then
+          table.insert(injected, lore.content)
+        end
+      end
+    end
+  end
+
+  if #injected == 0 then return requestData end
+
+  -- 로어북 내용을 하나의 system 메시지로 합쳐서 리퀘스트 앞부분(description 뒤)에 삽입
+  local loreContent = "<Active Characters>\n" .. table.concat(injected, "\n\n") .. "\n</Active Characters>"
+  local loreMsg = { role = "system", content = loreContent }
+
+  -- 세 번째 system 메시지 뒤에 삽입 (페르소나 뒤 NPC 리스트 위치)
+  local sysCount = 0
+  local insertPos = 1
+  for i, msg in ipairs(requestData) do
+    if msg.role == "system" then
+      sysCount = sysCount + 1
+      if sysCount == 5 then
+        insertPos = i + 1
+        break
+      end
+    end
+  end
+  table.insert(requestData, insertPos, loreMsg)
+
+  return requestData
+end)
+
+
+-- =====================================================
+-- [SCRIPT 2] editDisplay — 태그 숨김 (매 렌더링)
+-- =====================================================
+
+listenEdit('editDisplay', function(triggerId, text)
+  if type(text) ~= "string" then return text end
+
+  -- 파싱 태그 숨김 (유저에게 보이지 않도록)
+  text = string.gsub(text, "<past_history>.-</past_history>", "")
+  text = string.gsub(text, "<char_relations>.-</char_relations>", "")
+  text = string.gsub(text, "<main_scenario>.-</main_scenario>", "")
+  text = string.gsub(text, "<scenario_update>.-</scenario_update>", "")
+
+  -- 연속 빈줄 정리
+  text = string.gsub(text, "\n%s*\n%s*\n", "\n\n")
+  text = string.gsub(text, "^%s+", "")
+  text = string.gsub(text, "%s+$", "")
+
+  return text
+end)
+
+
+-- =====================================================
+-- [SCRIPT 3] editOutput — AI 응답 파싱 & 변수 저장
+-- =====================================================
+
+local function extractTag(text, openTag, closeTag)
+  local startPos, startEnd = string.find(text, openTag, 1, true)
+  if not startPos then return nil, text end
+  local closePos, closeEnd = string.find(text, closeTag, startEnd + 1, true)
+  if not closePos then return nil, text end
+  local content = string.sub(text, startEnd + 1, closePos - 1)
+  local newText = string.sub(text, 1, startPos - 1) .. string.sub(text, closeEnd + 1)
+  return content, newText
+end
+
+local function sanitize(text)
+  if not text then return text end
+  text = string.gsub(text, "```%w*", "")
+  text = string.gsub(text, "```", "")
+  text = string.gsub(text, "`", "")
+  return text
+end
+
+local function removeThoughts(text)
+  if not text then return text end
+  text = string.gsub(text, "<[Tt][Hh][Oo][Uu][Gg][Hh][Tt][Ss]>.-</[Tt][Hh][Oo][Uu][Gg][Hh][Tt][Ss]>", "")
+  text = string.gsub(text, "<[Tt][Hh][Ii][Nn][Kk][Ii][Nn][Gg]>.-</[Tt][Hh][Ii][Nn][Kk][Ii][Nn][Gg]>", "")
+  text = string.gsub(text, "<[Cc][Oo][Tt]>.-</[Cc][Oo][Tt]>", "")
+  return text
+end
+
+listenEdit('editOutput', function(triggerId, output)
+  if type(output) ~= "string" then return output end
+
+  -- 1) COT/Thoughts 제거
+  output = removeThoughts(output)
+
+  -- 2) 역따옴표 정리
+  output = sanitize(output)
+
+  -- 3) <past_history> 파싱
+  local pastHistory, out1 = extractTag(output, "<past_history>", "</past_history>")
+  if pastHistory then
+    setChatVar(triggerId, "Past_History", pastHistory)
+    output = out1
+  end
+
+  -- 4) <char_relations> 파싱
+  local relations, out2 = extractTag(output, "<char_relations>", "</char_relations>")
+  if relations then
+    setChatVar(triggerId, "Char_Relations", relations)
+    output = out2
+  end
+
+  -- 5) <main_scenario> 파싱 (최초 생성)
+  local scenario, out3 = extractTag(output, "<main_scenario>", "</main_scenario>")
+  if scenario then
+    setChatVar(triggerId, "Main_Scenario", scenario)
+    output = out3
+  end
+
+  -- 6) <scenario_update> 파싱 (덮어쓰기 — 전체 교체)
+  local update, out4 = extractTag(output, "<scenario_update>", "</scenario_update>")
+  if update then
+    setChatVar(triggerId, "Main_Scenario", update)
+    output = out4
+  end
+
+  -- 7) 공백 정리
+  output = string.gsub(output, "^%s+", "")
+  output = string.gsub(output, "%s+$", "")
+
+  return output
+end)

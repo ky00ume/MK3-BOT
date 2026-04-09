@@ -1,0 +1,125 @@
+/* ============================================
+   예시: 기본 스타일시트
+   ============================================
+   이 파일은 build.ps1에 의해 risu/Background_Embedding.txt로 병합됩니다.
+   RisuAI 캐릭터 설정의 "백그라운드 임베딩"에 붙여넣습니다.
+   ============================================ */
+
+/* --- 사이드패널 --- */
+
+.my-panel {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 280px;
+    max-height: 80vh;
+    background: #1a1a2e;
+    border-radius: 12px 0 0 12px;
+    padding: 16px;
+    overflow-y: auto;
+    z-index: 1000;
+    color: #e0e0e0;
+    font-size: 13px;
+}
+
+.my-panel-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #ffd700;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #333;
+}
+
+/* --- 버튼 --- */
+
+.my-btn {
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-align: center;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.my-btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.my-btn-primary:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+}
+
+.my-btn-secondary {
+    background: #333;
+    color: #aaa;
+    border: 1px solid #555;
+}
+
+.my-btn-secondary:hover {
+    background: #444;
+    color: #fff;
+}
+
+/* --- 카드 그리드 --- */
+
+.my-card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.my-card {
+    background: #16213e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.my-card:hover {
+    border-color: #667eea;
+    background: #1a2744;
+    transform: translateY(-2px);
+}
+
+/* --- 상태 표시 --- */
+
+.my-status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: #0f0f23;
+    border-radius: 6px;
+    margin: 4px 0;
+}
+
+.my-status-label {
+    color: #888;
+    font-size: 12px;
+}
+
+.my-status-value {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* --- 토글 버튼 (ON/OFF) --- */
+
+/* 주의: 연속된 클래스는 x-risu- 접두사 필요 */
+.my-toggle.x-risu-on {
+    background: #2d7a3e;
+    color: #8fff8f;
+}
+
+.my-toggle.x-risu-off {
+    background: #444;
+    color: #888;
+}

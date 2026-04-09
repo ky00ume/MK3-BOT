@@ -1,0 +1,28 @@
+{
+  "type": "risu",
+  "ver": 1,
+  "data": [
+    {
+      "key": "example_character",
+      "comment": "예시 캐릭터 (DATA) — 키워드 매칭으로 활성화되는 데이터 로어북",
+      "content": "[Character Data — Example Character]\nName: 예시 캐릭터\nClass: Warrior\nLevel: 5\n\nStats:\n- HP: 100\n- ATK: 25\n- DEF: 15\n\nSkills:\n1. 강타 — 적 1체에 ATK×1.5 대미지\n2. 방어태세 — 1턴간 DEF×2\n\nWeakness: 마법 공격에 취약",
+      "mode": "normal",
+      "insertorder": 100,
+      "alwaysActive": false,
+      "secondkey": "",
+      "selective": false,
+      "bookVersion": 2
+    },
+    {
+      "key": "example_location",
+      "comment": "예시 장소 (DATA) — alwaysActive=true로 항상 활성화되는 로어북",
+      "content": "[Location — Starting Village]\n- 작은 마을, 인구 약 200명\n- 북쪽에 숲, 남쪽에 강\n- 상점: 무기점, 약초점\n- NPC: 촌장, 대장장이",
+      "mode": "normal",
+      "insertorder": 50,
+      "alwaysActive": true,
+      "secondkey": "",
+      "selective": false,
+      "bookVersion": 2
+    }
+  ]
+}
