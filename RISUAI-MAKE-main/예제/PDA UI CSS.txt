@@ -1,0 +1,774 @@
+/* From Uiverse.io by chase2k25 */ 
+.pda2 {
+  --w: 300px;
+  --h: 400px;
+
+  --case-top: #676c73;
+  --case-bot: #2b2f35;
+  --lcd-bg: #f3d9a3;
+  --lcd-ink: #3a2700;
+  --lcd-dim: #a38241;
+  --lcd-line: rgba(0, 0, 0, 0.06);
+  --dock: #242b30;
+
+  width: var(--w);
+  height: var(--h);
+  position: relative;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+    monospace;
+  color: var(--lcd-ink);
+}
+
+.pda2__tab,
+.pda2__backlight {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pda2__bezel {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--case-top), var(--case-bot));
+  border-radius: 16px;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.28),
+    0 16px 28px rgba(0, 0, 0, 0.35);
+  padding: 12px 10px 12px 10px;
+}
+
+.pda2__screws {
+  position: absolute;
+  inset: 6px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  pointer-events: none;
+}
+.pda2__screws .pda2__screw {
+  width: 12px;
+  height: 12px;
+}
+.pda2__screws .pda2__screw:nth-child(1) {
+  justify-self: start;
+  align-self: start;
+}
+.pda2__screws .pda2__screw:nth-child(2) {
+  justify-self: end;
+  align-self: start;
+}
+.pda2__screws .pda2__screw:nth-child(3) {
+  justify-self: start;
+  align-self: end;
+}
+.pda2__screws .pda2__screw:nth-child(4) {
+  justify-self: end;
+  align-self: end;
+}
+
+.pda2__knob {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #7b828a, #444a52);
+  box-shadow:
+    inset 0 3px 5px rgba(255, 255, 255, 0.18),
+    inset 0 -3px 5px rgba(0, 0, 0, 0.5),
+    0 6px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  user-select: none;
+  display: grid;
+  place-items: center;
+}
+.pda2__knob-cap {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: #14181d;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.15),
+    0 -1px 0 rgba(0, 0, 0, 0.6);
+}
+
+.pda2__led {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4a1010;
+  box-shadow:
+    inset 0 0 2px #ff5b5b,
+    0 0 0 1px #100;
+}
+.pda2__led::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(255, 70, 70, 0);
+  pointer-events: none;
+}
+#pda2TabMap.pda2__tab:checked ~ .pda2__bezel .pda2__led {
+  background: #ff3a3a;
+  box-shadow:
+    inset 0 0 2px #ffd5d5,
+    0 0 6px 2px rgba(255, 60, 60, 0.45);
+  animation: pda2_led 1s steps(2, end) infinite;
+}
+#pda2TabMap.pda2__tab:checked ~ .pda2__bezel .pda2__led::after {
+  animation: pda2_beam 1.6s ease-out infinite;
+}
+@keyframes pda2_led {
+  50% {
+    filter: brightness(1.3);
+  }
+}
+@keyframes pda2_beam {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 70, 70, 0.35);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(255, 70, 70, 0);
+  }
+}
+
+.pda2__screen {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 40px;
+  bottom: 48px;
+  background: var(--lcd-bg);
+  border-radius: 9px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.12),
+    0 0 0 2px #101010;
+}
+.pda2__screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+      0deg,
+      transparent 0 1px,
+      var(--lcd-line) 1px 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 1px,
+      rgba(0, 0, 0, 0.03) 1px 2px
+    );
+  pointer-events: none;
+}
+.pda2__screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.12),
+      transparent 45%
+    ),
+    radial-gradient(
+      60% 40% at 10% 0%,
+      rgba(255, 255, 255, 0.16),
+      transparent 60%
+    );
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* Status bar */
+.pda2__statusbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 0 6px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
+  font-weight: 900;
+  font-size: 11px;
+}
+.pda2__logo {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 4px;
+  align-items: center;
+}
+.pda2__blink {
+  width: 5px;
+  height: 10px;
+  background: var(--lcd-ink);
+  display: inline-block;
+  animation: pda2_blink 1s steps(2, end) infinite;
+}
+@keyframes pda2_blink {
+  50% {
+    opacity: 0;
+  }
+}
+.pda2__ind {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 6px;
+  align-items: center;
+}
+.pda2__sig {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 2px;
+}
+.pda2__sb {
+  width: 3px;
+  background: var(--lcd-ink);
+  display: inline-block;
+}
+.pda2__sb--1 {
+  height: 5px;
+}
+.pda2__sb--2 {
+  height: 8px;
+}
+.pda2__sb--3 {
+  height: 10px;
+}
+.pda2__bat {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 2px;
+  align-items: center;
+}
+.pda2__bb {
+  width: 16px;
+  height: 9px;
+  border: 1px solid var(--lcd-ink);
+  position: relative;
+}
+.pda2__bf {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  bottom: 1px;
+  width: 10px;
+  background: var(--lcd-ink);
+  animation: pda2_bat 3s steps(3, end) infinite;
+}
+@keyframes pda2_bat {
+  0%,
+  100% {
+    width: 10px;
+  }
+  50% {
+    width: 14px;
+  }
+}
+.pda2__bt {
+  width: 2px;
+  height: 5px;
+  background: var(--lcd-ink);
+}
+.pda2__clk {
+  font-weight: 900;
+}
+
+.pda2__boot {
+  position: absolute;
+  inset: 20px 0 26px 0;
+  padding: 8px 8px 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.12)
+  );
+  animation: pda2_boot_fade 2.7s 0.2s ease forwards;
+  z-index: 3;
+}
+@keyframes pda2_boot_fade {
+  0% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+.pda2__bline {
+  color: var(--lcd-ink);
+  font-weight: 900;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.pda2__bline--1 {
+  max-width: 0;
+  animation: pda2_type 0.85s steps(22, end) forwards;
+}
+.pda2__bline--2 {
+  max-width: 0;
+  animation: pda2_type 0.6s 0.85s steps(20, end) forwards;
+}
+.pda2__bline--3 {
+  max-width: 0;
+  animation: pda2_type 0.6s 1.45s steps(18, end) forwards;
+}
+.pda2__bline--err {
+  margin: 2px 0;
+  padding: 2px 4px;
+  border: 1px dashed var(--lcd-ink);
+  background: rgba(0, 0, 0, 0.06);
+  animation: pda2_errflash 0.9s 2.05s steps(2, end) 2;
+}
+@keyframes pda2_errflash {
+  50% {
+    filter: invert(1);
+  }
+}
+.pda2__bprog {
+  margin-top: 2px;
+  height: 7px;
+  border: 1px solid var(--lcd-ink);
+  position: relative;
+}
+.pda2__bfill {
+  position: absolute;
+  inset: 1px;
+  width: 0;
+  background: var(--lcd-ink);
+  animation: pda2_fill 1.1s 2.05s steps(12, end) forwards;
+}
+@keyframes pda2_fill {
+  to {
+    width: calc(100% - 2px);
+  }
+}
+.pda2__bline--5 {
+  position: absolute;
+  bottom: 2px;
+  left: 8px;
+  opacity: 0.95;
+}
+@keyframes pda2_type {
+  to {
+    max-width: 100%;
+  }
+}
+
+.pda2__viewport {
+  position: absolute;
+  inset: 20px 0 26px 0;
+  overflow: hidden;
+}
+.pda2__apps {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 400%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  transition: transform 0.48s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.pda2__app {
+  position: relative;
+  padding: 6px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 6px;
+  background:
+    radial-gradient(
+        3px 3px at 22% 32%,
+        rgba(0, 0, 0, 0.03) 35%,
+        transparent 40%
+      )
+      0 0/10px 10px,
+    radial-gradient(
+        3px 3px at 70% 60%,
+        rgba(0, 0, 0, 0.03) 35%,
+        transparent 40%
+      )
+      0 0/12px 12px,
+    transparent;
+}
+.pda2__title {
+  font-weight: 900;
+  font-size: 11px;
+  text-transform: uppercase;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.15);
+  padding-bottom: 3px;
+}
+
+.pda2__box {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.28),
+    rgba(255, 255, 255, 0.12)
+  );
+  padding: 6px;
+  border-radius: 2px;
+  display: grid;
+  gap: 4px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+}
+.pda2__box--map {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 6px;
+}
+
+.pda2__kv {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 4px;
+  font-weight: 900;
+  font-size: 11px;
+}
+.pda2__k {
+  color: var(--lcd-dim);
+}
+.pda2__v {
+  color: var(--lcd-ink);
+}
+
+.pda2__prog {
+  position: relative;
+  height: 16px;
+  margin-top: 2px;
+}
+.pda2__trk {
+  position: absolute;
+  inset: 3px;
+  border: 1px solid var(--lcd-ink);
+}
+.pda2__fill {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  bottom: 4px;
+  width: 0;
+  background: var(--lcd-ink);
+  animation: pda2_prog 1.5s 0.2s steps(28, end) forwards;
+}
+.pda2__ticks {
+  position: absolute;
+  inset: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 7px,
+    rgba(0, 0, 0, 0.14) 7px 8px
+  );
+  pointer-events: none;
+}
+.pda2__plabel {
+  position: absolute;
+  right: 6px;
+  top: 0;
+  bottom: 0;
+  display: grid;
+  align-items: center;
+  font-weight: 900;
+  font-size: 10px;
+}
+@keyframes pda2_prog {
+  to {
+    width: calc(60% - 6px);
+  }
+}
+
+.pda2__timeline {
+  margin-top: 5px;
+  display: grid;
+  gap: 4px;
+}
+.pda2__row {
+  display: grid;
+  grid-template-columns: 8px 1fr;
+  gap: 6px;
+  align-items: center;
+  font-weight: 900;
+  font-size: 10px;
+}
+.pda2__row--done .pda2__rt {
+  color: var(--lcd-dim);
+}
+.pda2__dot {
+  width: 6px;
+  height: 6px;
+  background: var(--lcd-ink);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18) inset;
+}
+.pda2__dot--truck {
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--lcd-ink);
+}
+.pda2__truck {
+  width: 9px;
+  height: 9px;
+}
+.pda2__tc,
+.pda2__tb,
+.pda2__tw {
+  fill: var(--lcd-ink);
+}
+
+.pda2__cursor {
+  position: absolute;
+  right: 6px;
+  bottom: 32px;
+  font-weight: 900;
+  animation: pda2_cursor 1.05s steps(2, end) infinite;
+}
+@keyframes pda2_cursor {
+  50% {
+    opacity: 0;
+  }
+}
+
+.pda2__map {
+  width: 100%;
+  height: 72px;
+  image-rendering: pixelated;
+}
+.pda2__px {
+  fill: var(--lcd-ink);
+}
+.pda2__ping {
+  fill: none;
+  stroke: var(--lcd-ink);
+  stroke-width: 1;
+  animation: pda2_ping 1.7s ease-out infinite;
+  transform-origin: center;
+}
+@keyframes pda2_ping {
+  0% {
+    r: 0;
+    opacity: 1;
+  }
+  70% {
+    r: 12;
+    opacity: 0.2;
+  }
+  100% {
+    r: 12;
+    opacity: 0;
+  }
+}
+
+.pda2__legend {
+  display: grid;
+  gap: 2px;
+}
+.pda2__scan {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 36px;
+  height: 7px;
+  border: 1px solid var(--lcd-ink);
+  overflow: hidden;
+}
+.pda2__scan::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--lcd-ink) 0 6px,
+    transparent 6px 10px
+  );
+  animation: pda2_scan 1.1s linear infinite;
+}
+@keyframes pda2_scan {
+  to {
+    transform: translateX(10px);
+  }
+}
+
+.pda2__scroll {
+  max-height: 132px;
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.pda2__scroll::-webkit-scrollbar {
+  display: none;
+}
+.pda2__tip {
+  text-align: center;
+  font-size: 10px;
+  color: var(--lcd-dim);
+  margin-top: 5px;
+}
+
+.pda2__meter {
+  display: grid;
+  grid-template-columns: 34px 1fr 26px;
+  gap: 6px;
+  align-items: center;
+}
+.pda2__ml {
+  font-weight: 900;
+  font-size: 10px;
+  color: var(--lcd-dim);
+}
+.pda2__mb {
+  height: 9px;
+  border: 1px solid var(--lcd-ink);
+  position: relative;
+  overflow: hidden;
+}
+.pda2__mf {
+  position: absolute;
+  inset: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--lcd-ink) 0 6px,
+    transparent 6px 8px
+  );
+}
+.pda2__mf--cpu {
+  width: 42%;
+  animation: pda2_wob 2.3s ease-in-out infinite;
+}
+.pda2__mf--mem {
+  width: 68%;
+  animation: pda2_wob 3s ease-in-out infinite;
+}
+.pda2__mf--sto {
+  width: 55%;
+  animation: pda2_wob 2.6s ease-in-out infinite;
+}
+@keyframes pda2_wob {
+  50% {
+    transform: translateX(2px);
+  }
+}
+.pda2__mv {
+  justify-self: end;
+  font-weight: 900;
+  font-size: 10px;
+}
+
+.pda2__diag {
+  margin-top: 5px;
+  border: 1px dashed rgba(0, 0, 0, 0.18);
+  padding: 6px;
+}
+.pda2__drow {
+  font-weight: 900;
+  font-size: 10px;
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  gap: 6px;
+}
+.pda2__caret {
+  font-weight: 900;
+}
+
+.pda2__dock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 26px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.5));
+  border-top: 1px solid #0f0f0f;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.pda2__db {
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+.pda2__db:hover {
+  filter: brightness(1.1);
+}
+.pda2__ico {
+  width: 14px;
+  height: 14px;
+}
+.pda2__st {
+  stroke: var(--lcd-ink);
+  stroke-width: 1.7;
+  fill: none;
+}
+
+#pda2TabStatus.pda2__tab:checked ~ .pda2__bezel .pda2__apps {
+  transform: translateX(0%);
+}
+#pda2TabMap.pda2__tab:checked ~ .pda2__bezel .pda2__apps {
+  transform: translateX(-25%);
+}
+#pda2TabInfo.pda2__tab:checked ~ .pda2__bezel .pda2__apps {
+  transform: translateX(-50%);
+}
+#pda2TabSys.pda2__tab:checked ~ .pda2__bezel .pda2__apps {
+  transform: translateX(-75%);
+}
+
+#pda2TabStatus.pda2__tab:checked
+  ~ .pda2__bezel
+  .pda2__dock
+  .pda2__db:nth-child(1)::after,
+#pda2TabMap.pda2__tab:checked
+  ~ .pda2__bezel
+  .pda2__dock
+  .pda2__db:nth-child(2)::after,
+#pda2TabInfo.pda2__tab:checked
+  ~ .pda2__bezel
+  .pda2__dock
+  .pda2__db:nth-child(3)::after,
+#pda2TabSys.pda2__tab:checked
+  ~ .pda2__bezel
+  .pda2__dock
+  .pda2__db:nth-child(4)::after {
+  content: "";
+  width: 60%;
+  height: 2px;
+  background: var(--lcd-ink);
+  display: block;
+  border-radius: 1px;
+  animation: pda2_ul 0.9s steps(3, end) infinite;
+}
+@keyframes pda2_ul {
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
+.pda2__backlight:checked ~ .pda2__bezel .pda2__screen {
+  filter: brightness(1.12) contrast(1.05) saturate(1.06);
+}
+.pda2__backlight:not(:checked) ~ .pda2__bezel .pda2__screen {
+  filter: brightness(0.88) contrast(0.95) saturate(0.92);
+}

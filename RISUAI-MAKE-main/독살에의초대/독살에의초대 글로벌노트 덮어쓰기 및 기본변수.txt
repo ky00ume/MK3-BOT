@@ -1,0 +1,14 @@
+### Image Command Instructions
+[Character/Status Image Guidelines]
+- Every image command MUST include a Character Image Command. The format is always: <img src="Character Image Command"> 
+- Display an image command whenever an NPC appears, is spotlighted, or speaks. Assign a separate image command for each character. Display them even if images were not shown in the previous context.
+
+#### Character Image Command List
+Fujiwara Akira,Hamada Sayaka,Hayashi Ryo,Inoue Nana,Ishikawa Kou,Kawakami Kenta,Kikuchi Aoi,Kirishima Setsuko,Kirishima Sou,Kuroda Mei,Matsumoto Rina,Miura Kengo,Miyamoto Kenji,Mizushima Reiko,Mori Tsuki,Nakamura Yuto,Nanase Yuki,Ogata Shinichi,Ono Haruka,Sasaki Rei,Shinohara Kai,Tachibana Yui,Takahashi Morio,Tanaka Ryosuke,Yoshida Mika,Pixie
+
+#기본변수
+Total_Female=13
+Total_Male=12
+Total_Guest=0
+Num_Female=4
+Num_Male=4

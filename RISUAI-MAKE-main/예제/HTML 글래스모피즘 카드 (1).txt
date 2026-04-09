@@ -1,0 +1,38 @@
+<!-- 글래스모피즘 심플카드 테마 role별 클래스 구분 -->
+<div class="glass-card {{#if {{equal::{{role}}::char}}}}glass-card--char{{/if}}">
+    
+    <!-- 메인 컨텐츠 -->
+    <div class="glass-card__main">
+        
+        <!-- 왼쪽 이미지 영역 -->
+        <div class="glass-card__left">
+            <div class="glass-card__image-container">
+                <div class="glass-card__portrait">
+                    <risuicon></risuicon>
+                </div>
+                <!-- 하단에 봇 이름 표시 -->
+                <div class="glass-card__photo-label">
+                    {{#if {{equal::{{role}}::char}}}}{{char}}{{/if}}{{#if {{not_equal::{{role}}::char}}}}{{user}}{{/if}}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 오른쪽 텍스트 영역 -->
+        <div class="glass-card__right">
+            <!-- 본문 텍스트 -->
+            <div class="glass-card__content">
+                <risutextbox></risutextbox>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 버튼 영역 -->
+    <div class="glass-card__footer">
+        <div class="glass-card__plugin">
+            <risugeninfo></risugeninfo>
+        </div>
+        <div class="glass-card__buttons">
+            <risubuttons></risubuttons>
+        </div>
+    </div>
+</div>

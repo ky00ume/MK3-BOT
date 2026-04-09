@@ -1,0 +1,21 @@
+{
+  "type": "regex",
+  "data": [
+    {
+      "comment": "001_v001_예시_사이드패널_토글",
+      "in": "\\{MY_PANEL\\}",
+      "out": "<div class=\"my-panel\">{{#if {{equal::{{getvar::cv_panel_open}}::1}}}}<div class=\"my-panel-title\">사이드패널</div><div class=\"my-status-bar\"><span class=\"my-status-label\">상태</span><span class=\"my-status-value\">{{getvar::cv_state}}</span></div><div style=\"margin-top:12px\"><div class=\"my-btn my-btn-secondary\" risu-btn=\"close-panel\">닫기</div></div>{{/if}}{{#if {{not::{{equal::{{getvar::cv_panel_open}}::1}}}}}}<div class=\"my-btn my-btn-primary\" risu-btn=\"open-panel\">패널 열기</div>{{/if}}</div>",
+      "type": "editdisplay",
+      "ableFlag": true,
+      "flags": "g"
+    },
+    {
+      "comment": "001_v002_예시_상태창_리퀘제거",
+      "in": "\\{STATUS\\|[^}]+\\}",
+      "out": "{{#if {{greater_equal::{{chat_index}}::{{? {{lastmessageid}}-5}}}}}}$&{{/if}}",
+      "type": "editdisplay",
+      "ableFlag": true,
+      "flags": "g"
+    }
+  ]
+}
